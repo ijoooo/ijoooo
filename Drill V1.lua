@@ -10,7 +10,7 @@ local main = library:Load{
     SizeY = 550,
     Theme = "Cyan",
     Extension = "json", -- config file extension
-    Folder = "bored.folder" -- config folder name
+    Folder = "drill.folder" -- config folder name
 }
 
 -- library.Extension = "txt" (config file extension)
@@ -19,7 +19,7 @@ local main = library:Load{
 local espLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/ijoooo/ijoooo/main/Esp.lua'),true))()
 espLib:Load()
 
-local aimbot = loadstring(game:HttpGet'https://github.com/RunDTM/Zeerox-Aimbot/raw/main/library.lua')()
+local aimbot = loadstring(game:HttpGet'https://raw.githubusercontent.com/ijoooo/ijoooo/main/aimbot.lua')()
 
 local function ItializedMetamethodHooks() 
     local OldIndex = nil
@@ -70,11 +70,11 @@ EnableToggleAimbot:Keybind{
 
 local aimbotSmoothing = AimbotSection:Slider{
     Name = "Smoothing",
-    Text = "[value]/20",
+    Text = "[value]/5",
     Default = 0,
     Min = 0,
     Max = 5,
-    Float = 1,
+    Float = 0.5,
     Flag = "aimbotSmoothing",
     Callback = function(value)
         aimbot.Smoothing = value
