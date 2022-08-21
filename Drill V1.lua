@@ -236,7 +236,7 @@ local chamsOutlineColor = ChamsToggle:ColorPicker{
     Default = Color3.fromRGB(255, 255, 255), 
     Flag = "chamsOutline", 
     Callback = function(color)
-        espLib.options.chamsOutline = color
+        espLib.options.chamsOutlineColor = color
     end
 }
 
