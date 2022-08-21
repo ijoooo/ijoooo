@@ -92,7 +92,7 @@ aimbot.Aim = function(x, y, smooth)
         smooth = aimbot.Smoothing
     end
     if aimbot.SmoothingMethod == 0 then
-        mousemoverel((x + aimbot.Offset[1] - mouse.X) / (0 * (smooth + 1)), (y + aimbot.Offset[2] - mouse.Y) / (0 * (smooth + 1)))
+        mousemoverel((x + aimbot.Offset[1] - mouse.X) / (1 * (smooth + 1)), (y + aimbot.Offset[2] - mouse.Y) / (1 * (smooth + 1)))
     else
         mousemoverel((x + aimbot.Offset[1] - mouse.X) / (smooth + 1), (y + aimbot.Offset[2] - mouse.Y) / (smooth + 1))
     end
