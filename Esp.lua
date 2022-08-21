@@ -67,7 +67,7 @@ local espLibrary = {
         chams = true,
         chamsFillColor = Color3.new(1, 0, 0),
         chamsFillTransparency = 0.5,
-        chamsOutlineColor = Color3.new(255, 255, 255),
+        chamsOutlineColor = Color3.new(0, 0, 0),
         chamsOutlineTransparency = 0
     },
 };
