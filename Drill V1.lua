@@ -70,11 +70,11 @@ EnableToggleAimbot:Keybind{
 
 local aimbotSmoothing = AimbotSection:Slider{
     Name = "Smoothing",
-    Text = "[value]/5",
+    Text = "[value]/20",
     Default = 0,
     Min = 0,
-    Max = 5,
-    Float = 0.5,
+    Max = 20,
+    Float = 1,
     Flag = "aimbotSmoothing",
     Callback = function(value)
         aimbot.Smoothing = value
@@ -548,7 +548,7 @@ SpeedHackToggle:Slider{
     Text = "[value]/100",
     --Default = 5,
     Min = 0,
-    Max = 100,
+    Max = 30,
     Float = 1,
     Flag = "SpeedhackSlider",
     Callback = function(change)
@@ -573,7 +573,7 @@ JumpHackToggle:Slider{
     Text = "[value]/100",
     --Default = 5,
     Min = 0,
-    Max = 100,
+    Max = 70,
     Float = 1,
     Flag = "JumphackSlider",
     Callback = function(change)
