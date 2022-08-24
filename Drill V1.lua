@@ -378,19 +378,6 @@ local MaxDistanceSlider = EspSettingsSection:Slider{
 }
 
 local FontSizeSlider = EspSettingsSection:Slider{
-    Name = "Font",
-    Text = "[value]",
-    Default = 2,
-    Min = 0,
-    Max = 4,
-    Float = 1,
-    Flag = "FontSlider",
-    Callback = function(value)
-        espLib.options.font = value
-    end
-}
-
-local FontSizeSlider = EspSettingsSection:Slider{
     Name = "Font Size",
     Text = "[value]/15",
     Default = 13,
