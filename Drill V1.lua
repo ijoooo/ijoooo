@@ -125,7 +125,7 @@ local Aimbot_FOV_RadiusSlider = AimbotSection:Slider{
     Min = 0,
     Max = 500,
     Float = 1,
-    Flag = "chamsOutlineTransparency",
+    Flag = "FovRadius",
     Callback = function(value)
         aimbot.FOV = value
     end
