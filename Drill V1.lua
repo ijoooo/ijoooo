@@ -61,7 +61,7 @@ local EnableToggleAimbot = AimbotSection:Toggle{
 
 EnableToggleAimbot:Keybind{
     Default = Enum.KeyCode.E,
-    Blacklist = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2},
+    Blacklist = {Enum.UserInputType.MouseButton1},
     Flag = "AimbotToggleKeybind",
     Callback = function(bool)
         aimbot.Key = bool
@@ -74,7 +74,7 @@ local aimbotSmoothing = AimbotSection:Slider{
     Default = 0,
     Min = 0,
     Max = 20,
-    Float = 1,
+    Float = 0.5,
     Flag = "aimbotSmoothing",
     Callback = function(value)
         aimbot.Smoothing = value
