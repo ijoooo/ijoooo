@@ -1,6 +1,6 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ijoooo/ijoooo/main/ui.lua"))()
 
-local watermark = library:Watermark("Drill V1 | 0.1")
+local watermark = library:Watermark("Drill V1 | 0.4")
 -- watermark:Set("Watermark Set")
 -- watermark:Hide() -- toggles watermark
 
