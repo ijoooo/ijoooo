@@ -545,7 +545,7 @@ local SpeedHackToggle = MovementSection:Toggle{
 }
 
 SpeedHackToggle:Slider{
-    Text = "[value]/100",
+    Text = "[value]/30",
     --Default = 5,
     Min = 0,
     Max = 30,
@@ -570,7 +570,7 @@ local JumpHackToggle = MovementSection:Toggle{
 }
 
 JumpHackToggle:Slider{
-    Text = "[value]/100",
+    Text = "[value]/0",
     --Default = 5,
     Min = 0,
     Max = 70,
