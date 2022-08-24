@@ -355,6 +355,15 @@ local BoxFillTransparencySlider = EspSettingsSection:Slider{
     end
 }
 
+local TeamCheckToggle = EspSettingsSection:Toggle{
+    Name = "Limit Distance",
+    Flag = "limitDistance",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.limitDistance = bool
+    end
+}
+
 local MaxDistanceSlider = EspSettingsSection:Slider{
     Name = "Max Distance",
     Text = "[value]/Studs",
@@ -365,6 +374,19 @@ local MaxDistanceSlider = EspSettingsSection:Slider{
     Flag = "MaxDistanceSlider",
     Callback = function(value)
         espLib.options.maxDistance = value
+    end
+}
+
+local FontSizeSlider = EspSettingsSection:Slider{
+    Name = "Font",
+    Text = "[value]",
+    Default = 2,
+    Min = 0,
+    Max = 4,
+    Float = 1,
+    Flag = "FontSlider",
+    Callback = function(value)
+        espLib.options.font = value
     end
 }
 
