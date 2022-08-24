@@ -70,11 +70,11 @@ EnableToggleAimbot:Keybind{
 
 local aimbotSmoothing = AimbotSection:Slider{
     Name = "Smoothing",
-    Text = "[value]/20",
+    Text = "[value]/5",
     Default = 0,
     Min = 0,
-    Max = 20,
-    Float = 0.5,
+    Max = 5,
+    Float = 0.1,
     Flag = "aimbotSmoothing",
     Callback = function(value)
         aimbot.Smoothing = value
