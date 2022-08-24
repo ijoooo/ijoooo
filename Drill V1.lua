@@ -861,3 +861,7 @@ local save = configsection:Button{
         configlist:Refresh(library:GetConfigs())
     end
 }
+
+local AmbatukamSection = configs:Section{Name = "Ambatukam", Side = "Left"}
+
+local TheGuyWhoMadeDis = AmbatukamSection:Label("Made by Paman/Kamm the nigger!")
