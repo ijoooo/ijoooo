@@ -29,7 +29,7 @@ local function ItializedMetamethodHooks()
     OldIndex = hookmetamethod(game, "__index", function(Self, Key) -- METHOD 2
         if checkcaller() then return OldIndex(Self, Key) end 
               
-        if library.flags["JumpHackToggle"] and tostring(Key) == "JumpPower" then
+        if library.flags["JumpHack BypassToggle"] and tostring(Key) == "JumpPower" then
             return 50
         end
         if library.flags["SpeedHack BypassToggle"] and tostring(Key) == "WalkSpeed" then
@@ -74,7 +74,7 @@ local aimbotSmoothing = AimbotSection:Slider{
     Default = 0,
     Min = 0,
     Max = 5,
-    Float = 0.1,
+    Float = 0.2,
     Flag = "aimbotSmoothing",
     Callback = function(value)
         aimbot.Smoothing = value
@@ -594,7 +594,7 @@ local SpeedHack BypassToggle = MovementSection:Toggle{
 
 local JumpHack BypassToggle = MovementSection:Toggle{
     Name = "JumpHack Bypass",
-    Flag = "JumpHackToggle",
+    Flag = "JumpHack BypassToggle",
     --Default = true,
     Callback = function()
         if not HasInitialized then ItializedMetamethodHooks() end HasInitialized = true
