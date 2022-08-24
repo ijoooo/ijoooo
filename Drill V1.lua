@@ -1,6 +1,6 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ijoooo/ijoooo/main/ui.lua"))()
 
-local watermark = library:Watermark("Drill V1 | 0.4 | %c")
+local watermark = library:Watermark("Drill V1 | 0.4")
 -- watermark:Set("Watermark Set")
 -- watermark:Hide() -- toggles watermark
 
@@ -630,6 +630,7 @@ keybindsection:Button{
     Name = "Unload",
     Callback  = function()
         library:Unload()
+        espLib:Unload()
     end
 }
 
