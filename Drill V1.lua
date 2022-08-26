@@ -1,6 +1,869 @@
-_, Protected_by_MoonSecV2, Discord = 'discord.gg/gQEH2uZxUk'
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ijoooo/ijoooo/main/ui.lua"))()
+
+local watermark = library:Watermark("Drill V1 | 0.4")
+-- watermark:Set("Watermark Set")
+-- watermark:Hide() -- toggles watermark
+
+local main = library:Load{
+    Name = "Drill V1",
+    SizeX = 500,
+    SizeY = 550,
+    Theme = "Cyan",
+    Extension = "json", -- config file extension
+    Folder = "drill.folder" -- config folder name
+}
+
+-- library.Extension = "txt" (config file extension)
+-- library.Folder = "config folder name"
+
+local espLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/ijoooo/ijoooo/main/Esp.lua'),true))()
+espLib:Load()
+
+local aimbot = loadstring(game:HttpGet'https://raw.githubusercontent.com/ijoooo/ijoooo/main/aimbot.lua')()
+
+local function ItializedMetamethodHooks() 
+    local OldIndex = nil
+    local OldNameCall = nil
+    
+    
+    OldIndex = hookmetamethod(game, "__index", function(Self, Key) -- METHOD 2
+        if checkcaller() then return OldIndex(Self, Key) end 
+              
+        if library.flags["JumpHack BypassToggle"] and tostring(Key) == "JumpPower" then
+            return 50
+        end
+        if library.flags["SpeedHack BypassToggle"] and tostring(Key) == "WalkSpeed" then
+            return 14
+        end
+        
+        return OldIndex(Self, Key)
+    end)
+end
+
+local Aimbot = main:Tab("Aimbot")
+
+local AimbotSection = Aimbot:Section{
+    Name = "Aimbot",
+    Side = "Left"
+}
+
+local EnableToggleAimbot = AimbotSection:Toggle{
+    Name = "Aimbot",
+    Flag = "EnableToggleAimbot",
+    --Default = true,
+    Callback  = function(bool)
+        aimbot.Enabled = bool
+        aimbot.Players = bool
+        aimbot.CustomParts = {Instance.new('Part', workspace)}
+    end
+}
+
+EnableToggleAimbot:Keybind{
+    Default = Enum.KeyCode.E,
+    Blacklist = {Enum.UserInputType.MouseButton1},
+    Flag = "AimbotToggleKeybind",
+    Callback = function(bool)
+        aimbot.Key = bool
+    end
+}
+
+local aimbotSmoothing = AimbotSection:Slider{
+    Name = "Smoothing",
+    Text = "[value]/5",
+    Default = 0,
+    Min = 0.2,
+    Max = 5,
+    Float = 0.2,
+    Flag = "aimbotSmoothing",
+    Callback = function(value)
+        aimbot.Smoothing = value
+    end
+}
+
+local DrawFOVToggle = AimbotSection:Toggle{
+    Name = "Draw FOV",
+    Flag = "DrawFOVToggle",
+    --Default = true,
+    Callback  = function(bool)
+        aimbot.ShowFOV = bool
+    end
+}
+
+local FovColor = DrawFOVToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "FovColor", 
+    Callback = function(color)
+        aimbot.FOVCircleColor = color
+    end
+}
+
+local seperator = AimbotSection:Separator("Settings")
+
+local EnableToggleAimbot_TeamCheck = AimbotSection:Toggle{
+    Name = "Team Check",
+    Flag = "EnableToggleAimbot_TeamCheck",
+    --Default = true,
+    Callback  = function(bool)
+        aimbot.TeamCheck = bool
+    end
+}
+
+local EnableToggleAliveCheck = AimbotSection:Toggle{
+    Name = "Alive Check",
+    Flag = "EnableToggleAliveCheck",
+    --Default = true,
+    Callback  = function(bool)
+        aimbot.AliveCheck = bool
+    end
+}
+
+local Aimbot_FOV_RadiusSlider = AimbotSection:Slider{
+    Name = "Fov Radius",
+    Text = "[value]/500",
+    Default = 200,
+    Min = 0,
+    Max = 500,
+    Float = 1,
+    Flag = "FovRadius",
+    Callback = function(value)
+        aimbot.FOV = value
+    end
+}
+
+local Visuals = main:Tab("Visuals")
+
+local EspSection = Visuals:Section{
+    Name = "Esp",
+    Side = "Left"
+}
+
+local EnableToggle = EspSection:Toggle{
+    Name = "Enable",
+    Flag = "EnableToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.enabled = bool
+    end
+}
+
+local BoxToggle = EspSection:Toggle{
+    Name = "Box",
+    Flag = "BoxToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.boxes = bool
+    end
+}
+
+local boxColor = BoxToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "boxColor", 
+    Callback = function(color)
+        espLib.options.boxesColor = color
+    end
+}
+
+local boxFillToggle = EspSection:Toggle{
+    Name = "BoxFill",
+    Flag = "boxFillToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.boxFill = bool
+    end
+}
+
+local boxColor = boxFillToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "BoxFill", 
+    Callback = function(color)
+        espLib.options.boxFillColor = color
+    end
+}
+
+local healthBarsToggle = EspSection:Toggle{
+    Name = "HealthBars",
+    Flag = "healthBarsToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.healthBars = bool
+    end
+}
+
+local healthBarsColor = healthBarsToggle:ColorPicker{
+    Default = Color3.fromRGB(0, 255, 0), 
+    Flag = "boxColor", 
+    Callback = function(color)
+        espLib.options.healthBarsColor = color
+    end
+}
+
+local tracerstoggle = EspSection:Toggle{
+    Name = "Tracers",
+    Flag = "tracerstoggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.tracers  = bool
+    end
+}
+
+local tracerColor = tracerstoggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "tracerColor", 
+    Callback = function(color)
+        espLib.options.tracerColor = color
+    end
+}
+
+local ChamsToggle = EspSection:Toggle{
+    Name = "Chams",
+    Flag = "ChamsToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.chams  = bool
+    end
+}
+
+local chamsFillColor = ChamsToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "chamsFillColor", 
+    Callback = function(color)
+        espLib.options.chamsFillColor = color
+    end
+}
+
+local chamsOutlineColor = ChamsToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "chamsOutline", 
+    Callback = function(color)
+        espLib.options.chamsOutlineColor = color
+    end
+}
+
+local OOVToggle = EspSection:Toggle{
+    Name = "OOV Arrow",
+    Flag = "OOVToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.outOfViewArrows = bool
+        espLib.options.outOfViewArrowsOutline = bool
+    end
+}
+
+local OOVColor1 = OOVToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "outOfViewArrowsColor", 
+    Callback = function(color)
+        espLib.options.outOfViewArrowsColor = color
+    end
+}
+
+local OOVColor2 = OOVToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "outOfViewArrowsOutlineColor", 
+    Callback = function(color)
+        espLib.options.outOfViewArrowsOutlineColor = color
+    end
+}
+
+local seperator = EspSection:Separator("Info")
+
+local nameToggle = EspSection:Toggle{
+    Name = "Names",
+    Flag = "namesToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.names = bool
+    end
+}
+
+local nameColor = nameToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "NamesColor", 
+    Callback = function(color)
+        espLib.options.nameColor = color
+    end
+}
+
+local distanceToggle = EspSection:Toggle{
+    Name = "Distance",
+    Flag = "DistanceToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.distance = bool
+    end
+}
+
+local distanceColor = distanceToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "distanceColor", 
+    Callback = function(color)
+        espLib.options.distanceColor = color
+    end
+}
+
+local healthTextToggle = EspSection:Toggle{
+    Name = "HealthText",
+    Flag = "healthTextToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.healthText = bool
+    end
+}
+
+local healthTextColor = healthTextToggle:ColorPicker{
+    Default = Color3.fromRGB(0, 255, 0), 
+    Flag = "healthTextColor", 
+    Callback = function(color)
+        espLib.options.healthTextColor = color
+    end
+}
+
+local EspSettingsSection = Visuals:Section{
+    Name = "Settings",
+    Side = "Right"
+}
+
+local TeamCheckToggle = EspSettingsSection:Toggle{
+    Name = "Team Check",
+    Flag = "TeamCheck",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.teamCheck = bool
+    end
+}
+
+local visibleOnlyToggle = EspSettingsSection:Toggle{
+    Name = "Visible Only",
+    Flag = "visibleOnlyToggle",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.visibleOnly = bool
+    end
+}
+
+local BoxFillTransparencySlider = EspSettingsSection:Slider{
+    Name = "BoxFill Transparency",
+    Text = "[value]/1",
+    Default = 0.5,
+    Min = 0,
+    Max = 1,
+    Float = 0.1,
+    Flag = "BoxFill Transparency Slider",
+    Callback = function(value)
+        espLib.options.boxFillTransparency = value
+    end
+}
+
+local TeamCheckToggle = EspSettingsSection:Toggle{
+    Name = "Limit Distance",
+    Flag = "limitDistance",
+    --Default = true,
+    Callback  = function(bool)
+        espLib.options.limitDistance = bool
+    end
+}
+
+local MaxDistanceSlider = EspSettingsSection:Slider{
+    Name = "Max Distance",
+    Text = "[value]/Studs",
+    Default = 500,
+    Min = 100,
+    Max = 1000,
+    Float = 1,
+    Flag = "MaxDistanceSlider",
+    Callback = function(value)
+        espLib.options.maxDistance = value
+    end
+}
+
+local FontSizeSlider = EspSettingsSection:Slider{
+    Name = "Font Size",
+    Text = "[value]/15",
+    Default = 13,
+    Min = 10,
+    Max = 15,
+    Float = 1,
+    Flag = "FontSizeSlider",
+    Callback = function(value)
+        espLib.options.fontSize = value
+    end
+}
+
+local TracerOriginDrop = EspSettingsSection:Dropdown{
+    Name = "Tracer Origin",
+    Default = "Bottom",
+    Content = {
+        "Mouse",
+        "Top",
+        "Bottom"
+    },
+    Flag = "TracerOriginDrop",
+    Callback = function(option)
+        espLib.options.tracerOrigin = option
+    end
+}
+
+local FontSizeSlider = EspSettingsSection:Slider{
+    Name = "ChamsFill Transparency",
+    Text = "[value]/1",
+    Default = 0.5,
+    Min = 0,
+    Max = 1,
+    Float = 0.1,
+    Flag = "chamsFillTransparency",
+    Callback = function(value)
+        espLib.options.chamsFillTransparency = value
+    end
+}
+
+local FontSizeSlider = EspSettingsSection:Slider{
+    Name = "ChamsOutline Transparency",
+    Text = "[value]/1",
+    Default = 0,
+    Min = 0,
+    Max = 1,
+    Float = 0.1,
+    Flag = "chamsOutlineTransparency",
+    Callback = function(value)
+        espLib.options.chamsOutlineTransparency = value
+    end
+}
+
+local seperator = EspSettingsSection:Separator("OOV Settings")
+
+local FontSizeSlider = EspSettingsSection:Slider{
+    Name = "OOV Arrow size",
+    Text = "[value]",
+    Default = 10,
+    Min = 5,
+    Max = 25,
+    Float = 1,
+    Flag = "outOfViewArrowsSize",
+    Callback = function(value)
+        espLib.options.outOfViewArrowsSize = value
+    end
+}
+
+local outOfViewArrowsRadius = EspSettingsSection:Slider{
+    Name = "OOV Arrow radius",
+    Text = "[value]/200",
+    Default = 30,
+    Min = 0,
+    Max = 200,
+    Float = 1,
+    Flag = "outOfViewArrowsSize",
+    Callback = function(value)
+        espLib.options.outOfViewArrowsRadius = value
+    end
+}
+
+local WorldSection = Visuals:Section{
+    Name = "World",
+    Side = "Left"
+}
+
+local AmbientToggle = WorldSection:Toggle{
+    Name = "Ambient",
+    Flag = "AmbientToggle",
+    --Default = true,
+}
+
+local AmbientColor = AmbientToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "AmbientColor", 
+    Callback = function(color)
+        if library.flags["AmbientToggle"] then
+            game:GetService("Lighting").Ambient = color
+        end
+    end
+}
+
+local OutdoorAmbientColor = AmbientToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "OutdoorAmbientColor", 
+    Callback = function(color)
+        if library.flags["AmbientToggle"] then
+            game:GetService("Lighting").OutdoorAmbient = color
+        end
+    end
+}
+
+local ColorShiftToggle = WorldSection:Toggle{
+    Name = "ColorShift",
+    Flag = "ColorShiftToggle",
+    --Default = true,
+}
+
+local ColorShift_Top = ColorShiftToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "ColorShift_Top", 
+    Callback = function(color)
+        if library.flags["ColorShiftToggle"] then
+            game:GetService("Lighting").ColorShift_Top = color
+        end
+    end
+}
+
+local ColorShift_Bottom = ColorShiftToggle:ColorPicker{
+    Default = Color3.fromRGB(255, 255, 255), 
+    Flag = "ColorShift_Bottom", 
+    Callback = function(color)
+        if library.flags["ColorShiftToggle"] then
+            game:GetService("Lighting").ColorShift_Bottom  = color
+        end
+    end
+}
+
+local TimeChangerToggle = WorldSection:Toggle{
+    Name = "Time Changer",
+    Flag = "TimeChangerToggle",
+    --Default = true,
+}
+
+TimeChangerToggle:Slider{
+    Text = "[value] Hours",
+    --Default = 5,
+    Min = 0,
+    Max = 24,
+    Float = 1,
+    Flag = "TimeChangerSlider",
+    Callback = function(change)
+        if library.flags["TimeChangerToggle"] then
+            game:GetService("Lighting").ClockTime = change
+        end
+    end
+}
+
+local Misc = main:Tab("Misc")
+
+local MovementSection = Misc:Section{
+    Name = "Movement",
+    Side = "Left"
+}
+
+local SpeedHackToggle = MovementSection:Toggle{
+    Name = "SpeedHack",
+    Flag = "SpeedHackToggle",
+    Callback = function(state, bool)
+        if state then
+            library.flags["SpeedhackSlider"] = bool
+        else
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        end
+    end
+}
+
+SpeedHackToggle:Slider{
+    Text = "[value]/30",
+    --Default = 5,
+    Min = 0,
+    Max = 30,
+    Float = 1,
+    Flag = "SpeedhackSlider",
+    Callback = function(change)
+        if library.flags["SpeedHackToggle"] then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = change
+        end
+    end
+}
+
+local JumpHackToggle = MovementSection:Toggle{
+    Name = "JumpHack",
+    Flag = "JumpHackToggle",
+    --Default = true,
+    Callback = function(state, bool)
+        if state then
+            library.flags["JumphackSlider"] = bool
+        else
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
+        end
+    end
+}
+
+JumpHackToggle:Slider{
+    Text = "[value]/70",
+    --Default = 5,
+    Min = 0,
+    Max = 70,
+    Float = 1,
+    Flag = "JumphackSlider",
+    Callback = function(change)
+        if library.flags["JumpHackToggle"] then
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = change
+        end
+    end
+}
+
+local SpeedHack BypassToggle = MovementSection:Toggle{
+    Name = "SpeedHack Bypass",
+    Flag = "SpeedHack BypassToggle",
+    --Default = true,
+    Callback = function()
+        if not HasInitialized then ItializedMetamethodHooks() end HasInitialized = true
+    end
+}
+
+local JumpHack BypassToggle = MovementSection:Toggle{
+    Name = "JumpHack Bypass",
+    Flag = "JumpHack BypassToggle",
+    --Default = true,
+    Callback = function()
+        if not HasInitialized then ItializedMetamethodHooks() end HasInitialized = true
+    end
+}
+
+local configs = main:Tab("Configuration")
+
+local keybindsection = configs:Section{Name = "UI", Side = "Left"}
+
+keybindsection:Keybind{
+    Name = "UI Open / Close",
+    Flag = "UI Toggle",
+    Default = Enum.KeyCode.RightShift,
+    Blacklist = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2, Enum.UserInputType.MouseButton3},
+    Callback = function(_, fromsetting)
+        if not fromsetting then
+            library:Close()
+        end
+    end
+}
+
+keybindsection:Button{
+    Name = "Unload",
+    Callback  = function()
+        library:Unload()
+        espLib:Unload()
+    end
+}
+
+local themes = configs:Section{Name = "Theme", Side = "Right"}
+
+local themepickers = {}
+
+local themelist = themes:Dropdown{
+    Name = "Theme",
+    Default = library.currenttheme,
+    Content = library:GetThemes(),
+    Flag = "Theme Dropdown",
+    Callback = function(option)
+        if option then
+            library:SetTheme(option)
+
+            for option, picker in next, themepickers do
+                picker:Set(library.theme[option])
+            end
+        end
+    end
+}
+
+library:ConfigIgnore("Theme Dropdown")
+
+local namebox = themes:Box{
+    Name = "Custom Theme Name",
+    Placeholder = "Custom Theme",
+    Flag = "Custom Theme"
+}
+
+library:ConfigIgnore("Custom Theme")
+
+themes:Button{
+    Name = "Save Custom Theme",
+    Callback = function()
+        if library:SaveCustomTheme(library.flags["Custom Theme"]) then
+            themelist:Refresh(library:GetThemes())
+            themelist:Set(library.flags["Custom Theme"])
+            namebox:Set("")
+        end
+    end
+}
+
+local customtheme = configs:Section{Name = "Custom Theme", Side = "Right"}
+
+themepickers["Accent"] = customtheme:ColorPicker{
+    Name = "Accent",
+    Default = library.theme["Accent"],
+    Flag = "Accent",
+    Callback = function(color)
+        library:ChangeThemeOption("Accent", color)
+    end
+}
+
+library:ConfigIgnore("Accent")
+
+themepickers["Window Background"] = customtheme:ColorPicker{
+    Name = "Window Background",
+    Default = library.theme["Window Background"],
+    Flag = "Window Background",
+    Callback = function(color)
+        library:ChangeThemeOption("Window Background", color)
+    end
+}
+
+library:ConfigIgnore("Window Background")
+
+themepickers["Window Border"] = customtheme:ColorPicker{
+    Name = "Window Border",
+    Default = library.theme["Window Border"],
+    Flag = "Window Border",
+    Callback = function(color)
+        library:ChangeThemeOption("Window Border", color)
+    end
+}
+
+library:ConfigIgnore("Window Border")
+
+themepickers["Tab Background"] = customtheme:ColorPicker{
+    Name = "Tab Background",
+    Default = library.theme["Tab Background"],
+    Flag = "Tab Background",
+    Callback = function(color)
+        library:ChangeThemeOption("Tab Background", color)
+    end
+}
+
+library:ConfigIgnore("Tab Background")
+
+themepickers["Tab Border"] = customtheme:ColorPicker{
+    Name = "Tab Border",
+    Default = library.theme["Tab Border"],
+    Flag = "Tab Border",
+    Callback = function(color)
+        library:ChangeThemeOption("Tab Border", color)
+    end
+}
+
+library:ConfigIgnore("Tab Border")
+
+themepickers["Tab Toggle Background"] = customtheme:ColorPicker{
+    Name = "Tab Toggle Background",
+    Default = library.theme["Tab Toggle Background"],
+    Flag = "Tab Toggle Background",
+    Callback = function(color)
+        library:ChangeThemeOption("Tab Toggle Background", color)
+    end
+}
+
+library:ConfigIgnore("Tab Toggle Background")
+
+themepickers["Section Background"] = customtheme:ColorPicker{
+    Name = "Section Background",
+    Default = library.theme["Section Background"],
+    Flag = "Section Background",
+    Callback = function(color)
+        library:ChangeThemeOption("Section Background", color)
+    end
+}
+
+library:ConfigIgnore("Section Background")
+
+themepickers["Section Border"] = customtheme:ColorPicker{
+    Name = "Section Border",
+    Default = library.theme["Section Border"],
+    Flag = "Section Border",
+    Callback = function(color)
+        library:ChangeThemeOption("Section Border", color)
+    end
+}
+
+library:ConfigIgnore("Section Border")
+
+themepickers["Text"] = customtheme:ColorPicker{
+    Name = "Text",
+    Default = library.theme["Text"],
+    Flag = "Text",
+    Callback = function(color)
+        library:ChangeThemeOption("Text", color)
+    end
+}
+
+library:ConfigIgnore("Text")
+
+themepickers["Disabled Text"] = customtheme:ColorPicker{
+    Name = "Disabled Text",
+    Default = library.theme["Disabled Text"],
+    Flag = "Disabled Text",
+    Callback = function(color)
+        library:ChangeThemeOption("Disabled Text", color)
+    end
+}
+
+library:ConfigIgnore("Disabled Text")
+
+themepickers["Object Background"] = customtheme:ColorPicker{
+    Name = "Object Background",
+    Default = library.theme["Object Background"],
+    Flag = "Object Background",
+    Callback = function(color)
+        library:ChangeThemeOption("Object Background", color)
+    end
+}
+
+library:ConfigIgnore("Object Background")
+
+themepickers["Object Border"] = customtheme:ColorPicker{
+    Name = "Object Border",
+    Default = library.theme["Object Border"],
+    Flag = "Object Border",
+    Callback = function(color)
+        library:ChangeThemeOption("Object Border", color)
+    end
+}
+
+library:ConfigIgnore("Object Border")
+
+themepickers["Dropdown Option Background"] = customtheme:ColorPicker{
+    Name = "Dropdown Option Background",
+    Default = library.theme["Dropdown Option Background"],
+    Flag = "Dropdown Option Background",
+    Callback = function(color)
+        library:ChangeThemeOption("Dropdown Option Background", color)
+    end
+}
+
+library:ConfigIgnore("Dropdown Option Background")
+
+local configsection = configs:Section{Name = "Configs", Side = "Left"}
+
+local configlist = configsection:Dropdown{
+    Name = "Configs",
+    Content = library:GetConfigs(), -- GetConfigs(true) if you want universal configs
+    Flag = "Config Dropdown"
+}
+
+library:ConfigIgnore("Config Dropdown")
+
+local loadconfig = configsection:Button{
+    Name = "Load Config",
+    Callback = function()
+        library:LoadConfig(library.flags["Config Dropdown"]) -- LoadConfig(library.flags["Config Dropdown"], true)  if you want universal configs
+    end
+}
+
+local delconfig = configsection:Button{
+    Name = "Delete Config",
+    Callback = function()
+        library:DeleteConfig(library.flags["Config Dropdown"]) -- DeleteConfig(library.flags["Config Dropdown"], true)  if you want universal configs
+        configlist:Refresh(library:GetConfigs())
+    end
+}
 
 
-,nil,nil;(function() _msec=(function(e,l,o)local L=l["ټض؃جسج؃زڪ"];local G=o[e[(1300-0x2b1)]][e["ؠڝجڝڪجحڝئڝكآقڝټدك"]];local g=(844/0xd3)/(((-13635/0x65)+0x38)+0x51)local M=((125-(261-((0x1b8-(23490/0x57))+-#[[Macaroni And The Cheese]])))+-#[[mstir mid]])-(165/0xa5)local A=o[e[(435-0x106)]][e["سؠضنڪحضڝحججز"]];local p=(-#'ur mom is hot'+(0x7f-((0x145c20/144)/0x52)))+(78+-0x4c)local N=o[e[(0x46e-587)]][e["ز؃دضكآؠضدح"]]local d=((-47+0x49)+-#"one foot is in the grave")-(-#[[breathe   air]]+((0xdb-(0x6d38/233))-0x55))local P=(-0x50+(-#{(function()return#{('Kookfk'):find("\111")}>0 and 1 or 0 end),",",{}}+87))local D=((((-0x6b+(-#{20;(function()return#{('MBLBpH'):find("\76")}>0 and 1 or 0 end);(function()return{','}end)();'nil'}+11485))/0x79)-83)+-#"mama mo")local C=((1848/(-#'What I gotta do to get it through to you Im superhuman'+((((980856960/0x60)+-#'i want sex')/150)/239)))+-#"no h")local _=(53-(10829/(0x10d+(((-158+0x2c)+0x4c)+-#[[Give Robux]]))))local B=(((-#{{};69,(function()return{','}end)();'}',(function()return#{('ffOHmM'):find("\79")}>0 and 1 or 0 end);1,","}+202)-146)+-#"Smokey BArbecue BAcon BUford from checkers mm")local S=(11+-#{'nil';1;(function()return{','}end)(),36;1,'}',{}})local c=(((((46254/0x4e)-316)-0xbb)+-#"dies of cringe")-74)local h=(7+-#{31,",",",",{},31})local i=(5+-#{31;(function()return{','}end)(),{}})local w=(-93+(-#"i have found your porn folder i am now approaching your house at 83 miles per hour"+(((-#{",",",",19}+18106)-0x2374)/51)))local t=(76-(((-#'Alma Alma'+(0x29d-(381+-#{79,{};63;79,'nil'})))+-59)-151))local b=(((7998/((-#[[go kys go kys go kys]]+(3356864/0x7f))/142))+-29)+-#'mike litoris')local x=(-#'pls free synapse x i am gamer girl uwu'+(-0x38+(-#{'nil','nil',93;76}+101)))local u=(26-((24021/(4710/0x1e))-0x82))local O=((26-(-#{1,1;'nil';(function()return#{('hohFHh'):find("\104")}>0 and 1 or 0 end),(function()return#{('hohFHh'):find("\104")}>0 and 1 or 0 end);(function()return#{('hohFHh'):find("\104")}>0 and 1 or 0 end)}+67))+38)local U=(-#[[Gay porn]]+((-#{1;94;94,(function()return{','}end)();1;1;{}}+1206)/109))local s=((0x25a-(((-44+-0x18)+-#"tunnelposting")+0x191))/0x5e)local f=(8+-#{'nil',{};'}',(function()return{','}end)();1})local R=e[(0xb20-1466)];local H=o[e[(-0x38+229)]][e["دټزئڝددزددڪدؠدزڪ؃؃آ"]];local q=o[(function(e)return type(e):sub(1,1)..'\101\116'end)('؃حسنجسقك')..'\109\101'..('\116\97'or'ؠزټكحجآڪ')..e[((1261-0x2b0)+-#'Obfuscated by my ass hurts')]];local I=o[e[(0x489-614)]][e["ټئڝ؃ققكزسڪټكدآح"]];local v=(0xa8/84)-(-#[[Pipe te amo]]+(138-(0x14a-(467-0x106))))local y=((111-(-#'impulse loves moonsex'+(8184/(0x12e-214))))+-#"hypeblox likes sucking big black cock")-(-#"impulse was here pastebin reel"+(0x61-65))local F=o[e[(-#[[while wait 1 do print deez end]]+(0x1ba-239))]][e["ڝض؃زؠجآز؃جقسسڪققسحض"]];local n=function(e,o)return e..o end local j=(0x30+-44)*(-#[[cruz pp is large]]+(((2027772/0xed)/92)-73))local T=o[e["ټسڝڝسدجقكآ؃ضنئڝ"]];local a=(0x2/1)*(-#"If no father return milk end"+((0x319-(-0x73+533))-219))local W=((217161/0xbd)+-#"That meme string already exists and also You said a blacklisted word so you are getting banned and kicked and never come back")*((145-((36115/0x9b)-0x98))+-#'Help I cant think of a funny and original meme string pls help')local Y=(0x80+(-#'iPipeh i love You'+(-15-((11457/0xab)+-#[[Should have used luraph]]))))local m=(-0x14+(4444/(-#[[how to use visual studio jk jk dont take it seriously what 6 hours per messange]]+(-0x7f+408))))*(0xba/93)local k=o[e["ټززضضدټ؃"]]or o[e[(-#'i finally have my time travelling vehicle to locate moonsex v5'+(1269-0x294))]][e["ټززضضدټ؃"]];local r=(627-(0x30c-(0x371-472)))local e=o[e["دجڝقزجؠڪڝئجآضج؃آ؃"]];local z=(function(n)local r,l=2,0x10 local o={j={},v={}}local a=-d local e=l+M while true do o[n:sub(e,(function()e=r+e return e-M end)())]=(function()a=a+d return a end)()if a==(j-d)then a=""l=v break end end local a=#n while e<a+M do o.v[l]=n:sub(e,(function()e=r+e return e-M end)())l=l+d if l%g==v then l=y I(o.j,(F((o[o.v[y]]*j)+o[o.v[d]])))end end return N(o.j)end)("..:::MoonSec::..؃دحجئضسزقكنؠآټڪڝكدئټؠحئدټدححڝدقدددندجد؃دڪ؃حدضكد؃كدحدؠدنضئئآزددڪنقئآدككححآجئڪټټسس؃ئكئككئنټدسدڝدټ؃س؃ڝزقضج؃ؠقئقټټسسڝؠحكؠدئدټدنضئؠڝكقندؠقجدضكنكڝقآ؃دكدحدح؃ؠسئضؠ؃ضزټززن؃سنق؃حآجضجڪ؃زق؃ئز؃حسؠضجټآنضڝڪسضئد؃كټج؃آجڝزقئ؃دكدحدح؃ؠسئضؠ؃ضزټززن؃سنق؃حآجضجڪ؃زق؃ئزئدنؠؠجسئكڝنقدددندقس؃نزدجضڪ؃سقڝققټدسكسټكسدڝدقدسئ؃سنضدئؠئض؃ڪجسسټدحآؠدئدټدآئضكڪسزئ؃آكئححؠټئټټسزجئڝحزؠدئدټدنحضئڪئزس؃ڝنضدكضدڪدزد؃دكدحدټؠقدزنززڝدقدددڪسكڝححؠجئټټسضض؃؃ققدقنټجسنحضټڪنقز؃سزئحكؠسئئټآ؃ضكدحدؠدئدټدسدحنآدضدنؠجدآدضدئټڪ؃سحڝضكئحضؠججنآڝضق؃؃دټندجدآدكئضكټټئس؃نزقڝجكضحزنقضڪآقحزنټجدآدضدحڪټحزكؠدسضدنؠئئضآحضڝڪئزسح؃جكآدضدڪدآئسئ؃جقسدڝققئسآنئسقضددندجد؃ئآنئحټڝحآكنحدؠدئددئآكضحڝجزح؃ئنضحسآجؠئزؠ؃دكدحدڝآننجئآآئدڪټزحدنكسججحئڪنزد؃دكدقئدكنحئجآحضئڝضزسدجضآټجضدڪدزدئسڝڝقحدجنټجسؠضس؃ڪقزق؃ټكس؃حؠنئڪټجز؃؃ضسدؠآئدټدسدجئڪكزح؃ڪنئدضآ؃ئقټقسټڝسڝئؠكئدټدسدجزڝ؃قزڪئن؃حټآ؃ضجدن؃ككدحدؠدنجئ؃ټكجئڝ؃زټد؃نجضضضقڪدزد؃دڪزقنحئؠسجحآټسئآدئآندجدآدؠكضضڪضزد؃ئضؠڪ؃ز؃ئجآحسقنڝزق؃ننضحكآسئجڪسزئڝسكجدئؠ؃جڝټضضسڪڝقضآڝكئج؃ؠڪد؃ټنسؠ؃؃ك؃ح؃ؠ؃؃؃آنضؠڝ؃ق؃د؃ن؃ڝ؃ؠڪئحټنسڝآ؃كسدنسڝجټټسضحكزحسندجدآدؠضئنڪئسئ؃؃كجدضسڝجقآقح؃ڪقسحڪسزكڝجآسجؠڪكضسڝآقؠڝ؃ئدټدسدضكڝضقضددنئڝؠق؃د؃ڪجسح؃قئڝدقننئضآكسسڪجقسدئكسججؠئض؃ټڝزضڝسقڝحضسڝجئټ؃ضڪؠ؃زن؃ؠن؃ج؃آ؃ض؃ن؃سنڝؠك؃ح؃ؠ؃ئ؃ك؃ضڪڪحزن؃ڝس؃ححؠنئڪټجز؃؃ضئڝدټؠسجحجئ؃دقدددندككحسؠحئټڪضسكڪضقسحكؠضحضټ؃ضقڪقزټ؃س؃ئآڪضدڪدزدسح؃دقنڪ؃ؠقجسآجضكڝ؃ق؃؃آنئڝ؃ڝنڪحزد؃دكدق؃؃سضدټدسدڝدټضقج؃حكئحسآجج؃ڪجسنڝققندڝقضئجټ؃سدضئدڪندجدآدآضضجټحسئڝسكجحئؠضئ؃آقضقڪټزسآآجنآدضدڪدآدسټڝحكندسؠجدقټسضنقحدڪندجدآدؠټئنټڪسن؃ضسضدنؠئئضآحضڝڪئزسضڝجسآدضدڪدؠڪز؃؃سكئدسآجسؠڝنقندنننجنڪن؃؃ؠؠڪآزد؃دكدقټدسنحجضآسسجڝئقض؃حنضجئزآڪسزد؃دكدزضدكنسجڪآسئسقڪددندجدد؃ؠجئؠټسسئ؃ضئدڝجؠ؃ئجآضضسڝجزؠنڝجدآدضدئقټحسڪڝسكئدسنڝئئآسح؃ڪكقضدضندزڝضئڪدزد؃دټڪقححكئحټكسدڝدقدضض؃ننئجضؠحئڝټئسسڪسحسؠدئدټدؠجضنڪقزكدضجضآدضدڪدزد؃دآدنحڝدڝڝټټسدڝدقدضس؃ڝكححجؠټئسآضز؃ڝقققدټنسجؠسنڝدقدددڝضكسححؠڪحئټكسسڝئقآټآئضټدسدڝدآكزس؃حكضآحضنڪدزد؃دڪآكزدحنټئسآسئڪؠ؃ئسح؃جنآدضدڪدټقسحڝڪقسحئنسجڝټئضسنآدسندجدآدكئئكټسزئ؃ضڝئؠڝئدټدسدئضڪحزجآدزجححؠئئآټقزج؃؃كسدڝنضجؠزحڝدقدددڝضكنحڪؠسحئټكسحڝڝققدسؠجحئآټضنڪضزسدجكؠآټضدڪدزدئڪ؃؃كسحئنسدجټسسضڝضق؃؃ڝسحئ؃ضكڪدزد؃دټككضحضؠدحدټ؃سئڝضؠننئجدآدضدححآدئننزحؠؠدئدټدنئس؃ڪټق؃دجقئحكؠنئزڪضننكټحدؠدئدجئآكضحڪڪقئڝ؃نسجضؠټئنټڝسسنزحټؠدئدټدآضسجڪنزټ؃ټضڝحزآ؃ئټټضسس؃جټڝآحئدټدسدجئڝسقئدضن؃حڪزدجضټكسسڝڪقسټدقڝجحآڪضسضئدزندجدآدكڪض؃ټڝسآڝسكنككئټټدسدڝدټضزن؃ڪكسڪدكئئكټحسڝڝققسحجكسټڪسدڝدقدضض؃سكټحسآضئسكدئئ؃؃قڝدزننجقئآڝدقدددندجدئدنححددن؃نكدحدؠدك؃ح؃ؠزددآحقجدجن؃جقكدڝ؃زد؃دكدقحدننڪججټ؃سضټئزڪد؃ن؃جضؠكئنټڝسقنزحڝؠدئدټدنڝضسڝققضد؃كڝجئآ؃ئزڪضئؠڪئز؃ڝڝضزټكسدڝدقدضن؃ڝنئجضؠحئڝټئسسد؃حنؠدئدټدؠئضسڝدزحدجكحجضآ؃ضجؠدد؃كدحدؠدكئئدآسضسڪضزك؃حكئحآنئئټټنسضڝسكجؠضټؠسنڝنقندنننسنز؃نكضنڪدزد؃دڪآكزدحنټئسآسئڪؠ؃ئحنحجقآدضدڪدآآززڝحقټحسنسحڪڪ؃؃سقدددندزؠجسؠڪضدؠكسحڝئقآټدقجئنټدضحڝئقئڝضن؃حقؠقئټټسسؠكضحدؠدئددسآڝسسڪڪسسنئجدآدضدئڝټسزقؠآجحؠدئدټدنئس؃ڪټق؃دجقئحكؠنئزڪضس؃ټجك؃حضؠضئ؃آڪضؠقئددندجد؃سنئجددن؃ككدحدؠدقضئجآحسقندضزڝ؃قزكئضسڪدزد؃دټئقټح؃ؠقجڝجئڝئقدددندكحجدؠنؠئزڪ؃دكدحد؃آؠزجحآټسسڪسسڪآدزكج؃آسضجڪئضسكسحدؠدئدحسنضضنڪڪئجڝسجقآدضدڪدټكزض؃ضكدڪؠز؃؃؃ڝضڝڪقدددندزضججؠحضقؠزض؃ڪززضح؃نقجقآټضسجڝحنندجدآدكئئكټحسڪ؃ئز؃حسؠضجټآنضڝڪسجدڝضنجححؠڝضئڪدسح؃جقسدڝنئئنجئڝنقدددندنقححؠټئآڪئزدڝسقسدضكسټآسدڝدقدقضدجكححئؠسضجؠئز؃ڝټك؃حجټقټدسدڝدقدددندقن؃دكدڪنزد؃دكدكقح؃ؠججآټئسدڪحزئ؃سټنآضضدڪدزدسقڝحقڪدسدئټنسدڝدقدسئددكسحسؠضحكټحسئڝآسدؠكئدټدسدجكڝسزڪ؃حكڝج؃ؠنئضآك؃دكدحدؠدئدټدئدج؃ڪؠحضندجدآدنئئسڪضضد؃جقندڪنحئجټنئدڪحقجدضزئ؃زآجئحټڪسسڝؠحڝؠدئدټدنضضنڝئقض؃حكڝحئؠسجضڪ؃سقڝققټدسكسټزسدڝدقدسئ؃ټكنحضؠسضجزح؃ككدحدؠدقئجحآټضټڪجزح؃ئكآسنضنڪدزد؃دټجك؃دضؠندزټ؃سجڪئزسئنجقآدضدڪدؠكزض؃ضكدڝقنسئضڝضڝڝقدددندقضحكؠسئڪټسحدټضكجح؃ؠدجضټ؃سقڪڝضدننجدآدضدحجټټسحڝئقآدټننئئټضقضقآددندجد؃ټآ؃ئحټضحدټئك؃دڝنزجنآقنڝقؠددندجدحنآئئټټئسټ؃؃كئحسؠججسڪ؃ڝؠقدددندقآجزؠحئټڪسسسڪڪض؃ڪحزسڝآسټڝدقدددڪڪن؃جسآئئسؠجزس؃ضكضح؃نڝ؃ججئڝآقدددندكڝححؠڪئسڪئضض؃؃ققدقنټجسئك؃حقدددندقجحسآدئټټنسئڝحكضدسنضحئټضس؃ڝجزح؃قكسنكضؠڪدزد؃دټزقنحجنسحئآسسجڝززسدجضآټ؃ضدڪدزدئؠ؃سقڪحدقكجحآئضآندضجدنندححآئضئټؠ؃نكدحدؠدقزئ؃ټزئجڪحزض؃ننسجئڪضڪڪزد؃دكدقضدنؠئئضآحضڝڪئزسڪئن؃حټآ؃ضجزح؃نكدحدؠدكآئزآحضټڝسزسڝڪس؃ڝدكدڝضزد؃دكدسجح؃ؠكدزآنضټڪټجدڝضنجححؠڝضئڪدسح؃جقسدڝنئئنئك؃؃قدددندقئجدؠسئسټضئكڝحقئدآكضئ؃آقضقڪټزسقكجقآدضدڪدؠضسسڝزقححسنټئضڪ؃؃زقدددندقئجدؠسئسټضئكڝحقئدآسددجټنسدڪحقئدئقضج؃ؠقئقټټسسكضحدؠدئدټدسدڝدؠڝضدڪئجدآدضدڪدزدڪد؃؃سدقئئسټدسدڝدڝضزك؃سكڪحسنسڝدزد؃دكدز؃؃؃كزڝدنحسجڝجق؃دقضدججؠحئضټنزس؃ئآنؠسئدټدسدجڝڪحزڪ؃سنئحؠسحڪدزد؃دڪققندڝنضئ؃ټقددآجزح؃ئكآحقآجض؃ڪسسڝڝضسدؠزئدټدسدسئڪكزح؃ضن؃جقټ؃ڪؠزد؃دكدسؠحئؠ؃جڝنضضسڪئق؃؃ضكسټزضنڪدزد؃دټجك؃حككضئ؃آقضقڪټزسئنجسآدضدڪدؠزسټ؃؃قححضڪنټئسدڝدقدسض؃حكجآحضضڪدزد؃دڝؠكئح؃نڝؠكسزڝدقدددڝضن؃حقؠقئټټسڪككئحدؠدئددقآسسضكزحسندجدآدؠئئكټحسڪ؃ئسزدننټجټؠضسجڪحزڝدئندححآجئسټڝسئ؃نټڝؠضئدټدسدجنڪڝززد؃دكآڪضدڪدزدضآ؃زقحدټؠسجسؠڪح؃ټئقضدسكضجئزآڪضزد؃دكدققدحنڪجسڪ؃؃حقدددندق؃حجؠؠئسټئزضؠدسجدحنئجآآقسجڝ؃قس؃ڝكضڪآسجڪدزد؃دڪئقسدئؠضجنټ؃ضڝندضج؃حكئحآؠقضجڪ؃زسڝڝقضئضئڪټدسدڝدټسقئ؃سنج؃نؠڝضدڪسزضڪضكنحدنسقڝكټڝدقددد؃كنضجضآدضئنؠج؃آ؃كجدحؠقڝڝآقضنڝضزكدسكججسآئئسڪجسئ؃؃قڝحضنسجڝټضدڝڪئق؃؃ڪس؃حنؠؠض؃ڪ؃ز؃؃؃ض؃دننؠئ؃ټ؃س؃ڝ؃ئ؃؃ڪكححنؠڝد؃ؠسزئ؃دئڝدټؠسجحؠسڝزقدددندززج؃ؠټئضټسزجزكجحؠدئدټدؠئضحڝززسآدزئجسآئضضڪ؃سڪؠدزضدكنسجڪآسټكقئددندجد؃جآ؃ضكآسدحكدحدؠدؠزجنټئضنڪجزټ؃سق؃حڝؠټضنآضز؃ڝقققدټنسجڪسدڝدقدددندزدئ؃كدكڝزك؃دكدحدڝڪؠ؃ئزآسضڪڪسزڝدضجحټدضدڪدزدضئ؃دقسدسنضدكآحضئڪآجدڪجننجدؠحضئڪئټئكټحدؠدئدح؃ؠ؃ئزندسئ؃سنضجضؠنئڝټقزئزكحټؠدئدټدنحضڪڪجزن؃سكڝجضكئض؃ټټز؃؃جزسؠسئدټدسدئقڝ؃قج؃ټكضحؠضضڪدزد؃د؃دقححجؠضؠآسدڝدقدددندجدآدضدجسزآ؃دكدحدڝټنسجحآضضسڝجزجد؃كحججؠضقنزس؃دكدحدڝئنكجحآڪسئضئدټندجدآدنزئنڪئسنڝجقټدسسدح؃آڝضټڝنسسنضجدآدضدضضټنسڪڝسڝزؠدئدټدسدڝدقدجضڪد؃ئآقضدڪدزدئج؃؃ككڝزننجټآټئسقنددندجددقؠحضضټسزجڝڪقححجنآڝآسكڝدقدددڪضنجج؃آدئضڪ؃زقڝڝزسؠكئدټدسدجضڝجزن؃ټكټڪدنزدحڝ؃د؃كدحدؠدقئئ؃آڝضزڪنزقآدزضججآ؃ضدټضز؃؃ققڝټآئضټدسدڝدټئزن؃ضكسنكضضڪدزد؃دټزقټدحنقؠكسؠڝدقدددڪككسححؠټضضټكئجڝحكجحئسآټسسدڝدقدضټ؃حكجحسؠټجسزس؃دكدحد؃ئننئؠآسئنضئدزندجدآدآكضدټئسحڝټقټؠحئنټدسدڝدآسقكدضكسحڝآئئنڪ؃سڝكضحدؠدئدټدسدڝدؠكضدڝسجضآدضدڪدټقسحڝڪقسسڝئضټدسدڝدآڪزندئكئكئضضڪدزد؃دټټك؃دحنضڝآسڝڝدقدددڪئن؃حټآ؃ضجآئسكڝنقزحضن؃حضټ؃سدسكدنندجدآدنقئحټټسآ؃ئكددسنسجضجئڝټقدددندكئجسآجضجټسسڝ؃ضكضدكنسجڪآسضؠقڪددندجد؃حؠڪئجټنسسڝڝكض؃ضؠ؃جقآقضټڪسضدنؠجدآدضدحكټسسحڝټكضدككضجسټكسضسكححندجدآدنضئنټڪسسټئقكدحنڝجقآسسجټضق؃؃قكقحټؠسئؠزق؃دكدحد؃زنسجئټضس؃ڝجئئح؃جآآدضدڪدآآززڝحقټحسنسحڪك؃حجؠدئدڪدجڪآدضدڪدآضزجڝحقئدسؠجڝدؠ؃سجڪنزق؃نكڝزڝسدڪدزد؃دټئك؃دټؠ؃ئجؠئضكڪنززدضقضج؃ؠقئقټټسسټدحنؠدئدټدټقضسڪجزكد؃ن؃حآكنحضڝ؃؃نكدحدؠدقڪجحآقضڝڪنقضدسكضحسضحڝ؃زد؃دكدسحدضنضدسټزضسڪڝقضڪككححڝؠضئټټسزجحضحسؠدئدټدؠئضنڝؠزسڝكقسآقضدڪدزدسز؃جك؃دڪكجدقنجټككؠددندجد؃ضآجض؃ڪدسض؃؃كقدڝسدح؃ټدسضڪنق؃؃ڝضد؃جؠحئئټآسق؃جك؃حسنڝجضڝضڝآقدددندقئححآزئسكدئئ؃؃قڝدزننجقؠسڝؠقدددندقئجسآجئزټحسئڝسسقحسننزټسدڝدقدددندجدؠدك؃ؠئزن؃دكدحد؃قؠ؃ئجآآسئڝدزح؃ئكسحڪضدڪدزد؃دكدحددنقدحسسضڝدقدددڪؠنئج؃ؠڝؠئزن؃دكدحد؃ئنڪئ؃ټ؃سضڪكزن؃ڝكقزڝضقڪدزد؃دټئك؃دڝنزجنآقسئقحدزندجدآدكحئڪڪ؃زسڝڝكضدؠضټټدسدڝدآسزڝ؃حكجحټؠسجضڪ؃سقڝققټدسقحجنآڪضجڝ؃قض؃؃قضحسؠحئڪؠئسكڝسقئدآسآټڪسدڝدقدسق؃نكڝحضآ؃ضقكدئج؃؃كجدضنسئجآؠڝققدددندزآحسآنحئڪ؃سضڝسجزؠضئدټدسدجكڪسزح؃ض؃ئآقضدڪدزدئئ؃؃قڝحضنسجڝټضآئقكددندجد؃ؠآسئڪڪدئكڝحقئدآئحټسسدڝدقدسج؃نكقحكآضقنزڪ؃دكدحدڝضننئئآحضجڪټزس؃ضضددضؠسضكڪض؃حكضحدؠدئددڝآحضڪڪسحزؠدجدآدضدئكټسسحڝټكضدكقججحټجسئټضق؃؃قكقحټؠسكڝزس؃دكدحدڝكؠ؃جڝآسسنسكدڪندجدآدؠجض؃ڪكئزڝنقټدټكضئ؃آقضقڪټزسزئجآآدضدڪدؠئز؃ڝڝقزدننقڝدنڝضحڪڪزسح؃جؠآدضدڪدآضسحڝجئدڝجؠ؃ئجآضضسڝجڪئنآجدآدضدحئټنزضڝنكؠدسنڝئئآكضنڝدڪئنآجدآدضدحئڪ؃سټ؃؃كج؃دننجئآآضسڝجنضنقجدآدضدحآټسزنڝجقندڝنضڪزسزڝدقدددڝجكسحڪآ؃ضضټسننككحدؠدئدججآنسضنڝزجدكن؃جججآڪدزد؃دكدحدؠدضضددؠسڝنقدددندزجج؃ؠضضنؠزز؃؃جقئدسحكټزسدڝدقدضجدسنضجضآ؃ئڝ؃ضدئكدحدؠدقحجنآڪضجڝ؃قضڝضن؃حقؠقئټټسئآڝسكندجننجڝآضټكقكددندجد؃ئؠحئټټټسجڝحقئدآحكټآسدڝدقدسد؃ټكححئؠسئكڪ؃سټڝضقسحجكسټڝسدڝدقدضؠدسكڪجدؠكئحټئسآڪئقټدننضجسټجكنقڝددندجد؃ؠآسئڪڪدئكڝحقئدآكضئ؃آقضقڪټزسئنجڝآدضدڪدآ؃ض؃ڪزئدڝحؠجئجټ؃سقندقئ؃ننؠحسجكڪؠزد؃دكدسقدسؠضدئټ؃ضڝڪززن؃قنئحؠضكڪدزد؃دټجك؃دضؠندقټنسجڝ؃ڪئنؠجدآدضدجضټسسحڝڪئدڝئنكجسآئضآقحدټندجدآدنضضجټنسقڝققسحجقسئزآسضڝڝضحزنزجدآدضدجدټټسح؃نقسحجنؠټؠسدڝدقدسج؃نكقحكآضجئټكسنڝزكضقئضحټدسدڝدآڪزحدكزضحنآئضضټحسڝڝئقس؃ئنټجنآضضسڝجآڝنججدآدضدجسؠن؃حكؠحدؠدئدج؃آ؃سئڪسزئدسنجحسؠسضحآس؃سكدحدؠدقڪئ؃آڝضسڝنزؠنضجدآدضدحټټسسز؃ضڝئآآئدټدسدججڝ؃قكڪزكنحټؠټ؃دآضزجڝحقڝحئؠدجحټجضسڪڝزئدنضددئؠټئنټضسس؃جسدآئئدټدسدئ؃ڝسقض؃ضن؃ج؃آجححټڪسجڝنقسدڝؠضدئټ؃ضټڝ؃قجضڝئدآدضدڪدؠكزسڝڪقحدڝؠ؃جنآضئجڝ؃ق؃دضقدححآجضضزحدككدحدؠدنئجكآحضڪڝئس؃دسنضحټؠنئڝټسضض؃جقحدڝؠئئدآحسجڪسزڝ؃ئننحؠضآڪدزد؃دټحقټدنؠزجسقدجئڪكزس؃ئكآضضضقڪدزد؃دټحقڪدجننجسآڝسضسكدئندجدآدنضض؃ڪدؠڝكټحدؠدئددنآڝسزڝ؃زآ؃سقئحسآجضزټسزجئڝحآؠدئدټدنټس؃ڪئزح؃ټقدحټؠحضنټسزجئڝحقؠدئدټدنئضنڝضزندؠكسحڝجكڪقزد؃دكدقزحجؠ؃جڪؠججقآجڪئننجدآدضدحزڪ؃سڝ؃ضئد؃ئننئؠآسجدققددندجددضآجئحټئسس؃جكئآزئضټدسدڝدټضزسدكنضزڝضزڪدزد؃دټئك؃دټؠ؃ئجكئقضقحددندجد؃سؠؠڪسزد؃دكدزئدئؠ؃ئجآسز؃قټددندجد؃ئآ؃ئڝټزسنڝقسندقنڝئ؃ټجضس؃؃دئندجدآدكڪئنټڝحآنڝحدؠدئددڪآحضضڪسجد؃جننڪدندئحټڪسحڝڝض؃ڝآنحجڪآڪددڝضزك؃سضدحڝؠنئقټقسس؃جئحدڪئدټدسدڝدقدددآڝزدڪآضزڪدزد؃دټسقڝدحنججټآسجدققددندجدحضؠنضئټئز؃؃جقضسڝئجټدسدڝدڝ؃قئجضجؠآدضدڪدآآززڝحقټحسنسحڪك؃حئؠدضدنضجدآدضدجدټحزج؃ضټڝؠضئدټدسدجكڪسزح؃ضڪڝآآضدڪدزدئحڝضقڪدننڝحجآسضڪڝ؃قض؃سكؠآزضدڪدزدضسڝڝقټح؃نحجضڝضڝققدددندزئج؃آجئسؠقزسڝنجزؠقئدټدسدجكڝضقضددزقحسآضكڝق؃؃دكدحددكنسجحآټسضڪكسض؃سنكجضكئض؃ټټز؃؃جئآؠڪئدټدسدجئڝ؃زڝ؃زكنحقآسضجټحزضڝنك؃دڝڪنټسسدڝدقدضزد؃نجحئؠسؠئزټ؃دكدحدڝحنضجضنسسكڝضقج؃حزئححآئئك؃ض؃زكدحدؠدقجئ؃ټضسضڝ؃زڪح؃جڝآدضدڪدآئسسڝئكضدنؠ؃جڝقدججڝ؃قج؃ضكسججحئڪنزد؃دكدسقدسؠضحضآكضسڪڪزسدئئزآضضدڪدزدئئڝحكئدكقدټكسدڝدقدضجد؃كضجنكقضنڪجز؃زكحټؠدئدټدنئسسڝئقضد؃كڪڪدنضئكټسسڪڝسؠضؠؠئدټدسدجزڝ؃قزآدقجححؠضئنڪسزئسئحڝؠدئدټدنضسجڪنزټ؃ټضددزقح؃دڪټحدآدئڝڪضحكټټسدڝدقدضجدنندححآئضئآضز؃ڝقققدټنسؠكسؠڝدقدددڪقكسجضنئئسڪجززڝنقئدسآ؃ټنسدڝدقدضح؃ڪكجححآضضسټآسحڝڪن؃ؠئئدټدسدجټڪسزقزئجڝآدضدڪدؠزز؃ڝڝكض؃ئننئؠآسئئڪټزن؃ضكسججكدڪقزد؃دكدزئدسنئئضآنس؃ڪڝآڝؠزجدآدضدحئټكسحڝڪكئڝزننجټآټددټضقج؃حكڝجئآدئحڪجسسڝڝقئحننؠټؠسدڝدقدضڝ؃حكڪحسآئحئڪ؃سټ؃؃كجټآئټټدسدڝدآڪق؃دسنئحسكجضسڪضزض؃؃قڝڪئآ؃ټڝسدڝدقدضټ؃نكڪحنآض؃دؠضسن؃ئكضدحنڝجئآسدآك؃ددندجددسكن؃دآ؃زدڝسقڝټدز؃ڝدنئضټڝ؃قئ؃سدكټضضدڪدزدز؃؃سكض؃؃نزحزآنضسڝقضحدجنجج؃آقضئؠئز؃ڝټك؃حجڪنټڝسدڝدقدزئ؃ككححڪآئحزټنسټڝټسئح؃نټئ؃ټجڝحقضددندجد؃ټؠسئزڪضڪكنسحدؠدئدحضآحضجندسضد؃كقحقؠټئسكدئجڝحقئدآنقئجټ؃سسڪڝزض؃ؠجئآدضدڪدؠسزئ؃دئآؠكئدټدسدئئڪسقضدضكنحڝؠقضئئئ؃زكدحدؠدقحجنآڪضجڝ؃قضآآجآآدضدڪدآآززڝحقټحسنسحڪك؃حسؠدئدڪدئكآدضدڪدڪدسح؃ئكضدسنججنآڝدڝڪئق؃؃ڪس؃ججؠحضقن؃زسټآضئڪققزجؠنسڪڪقئددندججدسضدڪدزدجزكدحدؠدضجحڪسدڝدقدڝآندجدآدضدڪدزد؃دكدحدؠدئدټدسدڝدقددحندجدآدضدڪدقج؃دكدححؠدض؃ټدسدڝدكجددندجحآدزدڪدزد؃دؠزحدؠدئحټدسنڝدقحددؠټجدآض؃ټڪدزد؃دكنحدؠحئدټدؠ؃ڝدقدددنحجدآدضدڪجآس؃دكححدڝكئدټدسد؃جڪزددنحجدآضضدڪدزددجكدحدؠحئدټڝسدڝدقدحجندجدآجضدجټزد؃دكدئدؠدئدټجسدڝجقدزسندئجآدضدڪضزددآكدحدؠدئدټدسدڝجقددضندجدآدضدڪدزد؃حكدحدؠدئجټدسدڝدقددحندجحآدضجڪدكد؃دكدحجؠدئحټد؃؃ڝدكجددندجضآدسكڪحزد؃دكدټدؠدئجټدسضڝدقجددآدنزآدضئڪدزح؃دجڪحدؠدئدټدسسڝدقدددنزجدڝدضدڪدزس؃دس؃حدضحئد؃دسدڝدقسددضآجدضحضدددزد؃دكسحدضقئدڝڝسدحدقدددنسجدڪكضدڝجزدجدكدحدؠسئدزنسدزجقدئدندجدآسضدسڪزدجټكدحدؠدئدټئسدڝسقددجندئجآدضدڪضزد؃ڝكدحدؠدضجضآسدڝسقدسټندجدآدزدضجزد؃سكدحسؠدنسټدزجڝدقددقندؠټآدضدڪدزد؃دكدحكؠدئحټدسدڝدقدددندجسآدضكڪدزد؃دكدحدؠدئضټدسدڝدقجددندجدآدضضڪدزح؃دكجحدټدئدټدسسڝدقضددئڪجدآدضدڪدزس؃دكجحدؠحئدڪجسدڝدقسددنڝجدآدضدڝجزد؃دكزحد؃ټئدټدسدددڪ؃ددنزجدآزضدئسزددجحضحدؠكئدڪڪسدڝدقدددآآجدآزضدڪكزد؃دكدحدحڝئدټسسدڝدقددجندجدآآضدڪسزد؃حكدحجؠدئز؃آسدڝزقدحؠندجحآدضحڪدزدكټكدحدؠدئحټدسدڝدندؠحندجقآدضئڪدڝح؃دنجحدؠدئنټدقؠڝحقدددندجدآدضقڪدزن؃دكجحدټدئدټدسكڝدققددؠڝجحآدضدڪدزؠ؃دكدحدؠجئد؃دسدڝدقؠددز؃جدڪؠضحددزد؃دكؠحدضئئدڝزسحڝدقدددنكجدآؠضدڪجزدحدكدحدؠنئدټكسدزئقدددندجدآآضدڪدزد؃ئكدضدضضئدټآسدآ؃قدجؠنحسدسضضدڪآزدنضكدجزؠدئز؃آسدڝټقدضئندجحآدضحڪدزدكټكدحدؠدئسټدسدڝدكدحآندجآآدؠئڪدزټ؃دكدحدؠدئنټدسآڝدقجددآدجدآدضؠڪدزن؃دسقحدؠدئدټدسټڝدقدددنضجدټجضدڪدزڪ؃دټټحدؠدئدڝدسدڝدقڪددنڪجدقنضد؃دزد؃دكڪحدؠڪئدآڪسد؃دقدددنټجدجسضدڪڪزد؃دكدحدؠڪئدټحسدڝدقدحجندجدآڝضدحټزد؃دكدئدجڝئدټڝسدڝڝقدكآندضدئڝضدڪڝزد؃ڝكدضقؠدئدڝحسدڝڪقددڝندجحآدسدنسزد؃ټكدققؠدئڪټدكدكضقددټندټضآدحڪڪدززجآكدحڪؠدزڪټدسحڝدقحددندآټآدضدڪدزس؃دكدحدآدقضټدسټڝدڪئددنڪجدآدضدڪدزؠ؃دكټحدؠحئدڝدسدڝدقؠددنكجدحجضدڪدزد؃دكټحدؠدئدټكسدحدقدددنټجدك؃ضدنضزدجدكدحدؠټئدآآسدحجقدئدندجدآټضدضسزدكككدضدؠدئدټټسدڝدقحضكندسدآدضدڪټزدحآكدڝؠؠدزدټدسدڝټقدكدندزكآدقدقضزد؃ټكدآضؠدقئټدسزحآقددڪندزسآدضحڪدزح؃دكدؠټؠدئدټدسسڝدقدددؠدزآآدضټڪدټئ؃دكڪحدؠدئدټدسؠڝدقټددنججدڪدضدڪدزآ؃دككحدجئئدټدسدڝدقڪددندجدآئضدددزد؃دكڪحدق؃ئدحدسدحدقدددنڪجدسضضدجززد؃زآآحدؠڝئدټجسدڝحقددحندجدضټضدڪدزد؃سكدحدؠدضدس؃سدڝڪقدزئندجڝآدضدڪدزد؃آكدحڪؠدئجټدقدڝدقددټندجآآدحزڪدزد؃دكدحڝؠدئدټدسئڝدكجددندئ؃آدئټڪدزد؃دؠدحدؠدض؃ټدز؃ڝدجټددؠججدآدسدڪدڪك؃دكدحدآجئدټدزحڝدڝكددندجدټجضدڪدقج؃د؃كحدؠدئدټدسدڝدك؃ددؠججدآجضدڝدجس؃دكڝحدحسئدڪ؃سدحدحضددنڝجدسضضدڝكزد؃زآآحدآ؃ئد؃حسدڝحقددحندجدضټضدڪدزد؃سكدحدؠدضد؃زسدڝڝقدزئندئ؃آدضدڪدزد؃ټكدحڝؠدئجټدقدڝدقددڪندجكآدكزڪدقج؃دكدج؃ؠدسنټحسدڝدقدددندجڪآدس؃ڪدزج؃دؠدحدؠدئڝټدسكڝد؃ئددندجدآدسدڪدزد؃دكئحدڪدئدټدزدڝدض؃ددقسجدڝدضدڪدقد؃دجضحدزقئدټزكآڝدكحددؠآجدآحضدڪحزد؃دحټحدؠدئدټسسدڝدقدحدڪآجدټدضدئئزددحكدحدؠدئدټڝسد؃دقددجندضدآدضدڝ؃زد؃ككدنئؠدئدټدسد؃حقدددندجئآدقدڪدزددحكدڝ؃ؠدججټدكدڝدقدححندټضآدضټڪدززجآكدججؠدسڪټدسحڝدقحددندآټآدضدڪدزس؃دكدحدآدقآټدزحڝدڪئددؠججدآدضدڪدق؃؃دنححدؠجئدڝدسدڝدكدددنكجدحجضدڪدزد؃دنجحدؠدئدټكسدحدقدددؠججدك؃ضدڝقزحجدكدحدآجئدآآسددآقحئدئضجدټجضدضسزدآجكدضدضضئدڪجسدڝدقحنكندسدسضضدڝجزدحآكدؠحؠدزدزضسد؃جقدكدندڝدآدقدقضزددجكدآضؠدؠدټدسزحآقدحئندزقآدضحڪدزح؃دكدؠټؠدئدټدسسڝدقدددؠدسزآدسجڪدټئ؃دنئحدؠدئدټدزدڝدكجددنججدڪدضدڪدقح؃دكئحدجحئدڪجسدڝدكئددؠؠجدآدضدڪدزد؃دنححدآئئدټجسدددقدددؠججدټحضدڝڝزح؃دكدحدآضئدټدسدڝجقدئدندجدټضضدؠ؃زدحككحضدؠدئدڪضسدكئقدجزنحجدزدضدڝجزددضكدحجؠدسدج؃سد؃ئقدحجندؠئآدضددټزددسكدحدؠدئئټدكدكضقدحسند؃؃آدضئڪحندنضكدجسؠدڪضټدك؃ڝدقزئآندئزآدقڝڪدزح؃دكححدؠدټټټدسدڝدقضددندجدټدكآڪدقس؃دڝئحدآزئدټدسدڝدكئددؠسجدآجضد؃دزد؃دنضحدآجئدضئسدڝدقدددؠزجدآدضدڪئزدجدكدحدآزئدن؃سدق؃قدئدندجدټزضدقضزدق؃كدحزڪآئدڪقسدددقددحندجحآدضدزټزد؃دكدحضؠدئدټدزدق؃قدحزندكئآدسقڪدزد؃دكدجضؠدضزټدسجڝدندددندئسآدسضڪدئز؃دكدحدؠدضقټدسدڝدقئددؠججدآدسكڪدسټ؃دكدحدټدئدټدزكڝدككددضټجدټجضدڪدقن؃د؃كحدؠدئدڪجسدڝدكؠدددكجدآدضدڝجزد؃دنآحدحكئدټدسدڝدقدددؠكجدټآضدڪجزدددضسحدآقئدئسسد؃كقدئدئضجدټقضدقضزددنكدحزڪآئدڪكسد؃ڝقددحندجحآدضدزټزد؃دكدحضؠدئدټدزدجآقدحقندكئآدسكڪدزد؃دكدجسؠدضقټدسجڝدندددندئزآدسجڪدڝئ؃دكدحدؠدضكټدسدڝدقئددټدجدآدسكڪدئ؃؃دحڝحدڪدئدټدزكڝدحضددزججدآزقآڪدقن؃دؠسحدؠحئدټحسدڝددټددندجدآضضدڪدزدددح؃حدآكئدجئسد؃نقدددندجدټزضدڝكزد؃جكدئدؠدئدڪقسد؃زقدڪزندجدآدضدڝنزد؃دكدحئؠدضجټدسد؃ؠقد؃ټندجدآدزدڪدزددؠكدجؠؠدڝټټدزجڝدقدحآندنكآدضدڪدقج؃دكدجټؠدؠكټدسدڝدكجددندئڪآدآكڪدزد؃دكدحدؠدضؠټدزڪڝدقجددؠدڝسآدسنڪدڪس؃دنؠحدڪدڪضټدزنڝدحضددجڝجدآزقآڪدقؠ؃دټححدؠحئدټحسدڝددټددندجدآضضدڪدزدددټآحدآنئدجئسد؃ؠقدددندجدټقضدڝنزد؃جكدئدؠدئدڪكسد؃جقدكئندجدآدضدڝؠزد؃دكدحئؠدزدټدسد؃ؠقدڪ؃ندټسآدقدڪدزددؠكدآضؠدددټدسزحآقدحآندجقآدضحڪدزح؃دكدؠټؠدئدټدسضڝدقدددؠدآ؃آدسؠڪدټئ؃دنآحدؠدئدټدزكڝدكؠددنججدڪدضدڪدقن؃دنكحدقزئدټدسدڝدكآددندجدآئضدڝجزد؃دنټحدنټئدټدسدددقدددؠټجدټټضدكټزددجكدحدآڪئدسكسدڝدقدحجندجدټڝضدضكزد؃دكدججؠدئدڝ؃سدقكقدددندجدآدضدڝټزدح؃كدحجؠدضدكسسد؃آقدقسندئټآدقدقضزددآكدآضؠدضنټدسزحآقدحټندضحآدضحڪدزح؃دكدؠټؠدئدټدسضڝدقدددؠدزآآدسآڪدټئ؃دنټحدؠدئدټدزنڝدكآددنججدڪدضدڪدقؠ؃دنجحدجئئدټدسدڝدكټددندجدآئضدددزد؃دنټحدق؃ئدآؠسدحدقدددؠټجدسضضد؃جزد؃زآآحدآڪئدڝئسدڝحقددحندجدضټضدڪدزد؃ضكدحدؠدضدس؃سد؃ټقدزئندئڪآدضدڪدزددؠكدجټؠدئجټدقدڝدقدحآندئؠآدحزڪدزد؃دكدجڪؠدئدټدسئڝدكجددندئڝآدئټڪدزد؃دؠدحدؠدضڝټدزڝڝدجټددؠججدآدز؃ڪدڪك؃دكدحدآجئدټدقدڝدڝكددندجدټجضدڪدكح؃د؃كحدؠدئدټدسدڝدكڝددآحجدآجضدڝدجس؃دنڪحدحسئدڪڝسدحدحضددؠڪجدسضضدجنزد؃زآآحدآڝئد؃ټسدڝحقددحندجدضټضدڪدزد؃ضكدحدؠدضددآسد؃ڪقدزئندئڝآدضدڪدزددآكدجڪؠدئجټدقدڝدقدحټندئجآدټئڪدزد؃دكدجڝؠدئدټدسئڝدؠدددندئڝآدح؃ڪد؃ؠ؃دآدحدؠدضڝټد؃ضڝدكقددنزسآآدز؃ڪدزآ؃دكححدؠحئدټدڝټڝدقدددنضجدآدضدڝد؃؃؃دنڝحددئئدڝ؃سدڝدقدددؠټجدټڝضدڪجزدحدكدحدآڪئدڪټسدآزقدددندجدڪ؃ضدڪدزد؃ئكدججؠدئدڝدسدڪټقدددندضدآدضد؃دزدحدكدټټؠدضجټدسددحقدقكندجدآدسجڪدزدحجكدككؠدئدټدزجڝدقدجئندنكآدضدڪدزد؃دكدئدؠدسئټدسجڝدكدټسندض؃آدآسڪدكد؃دآدآضؠدس؃ټد؃ضڝدنسدحنزسآآدزدڪدنج؃دكححدؠحئدټدڝټڝدقدددنضجدآدضدڝد؃؃؃دؠ؃حددئئدڝدسدڝدقدددؠڪجدڪ؃ضدڪجزدحدكدحدآڝئدڪټسدآزقدددندجدڪدضدڪدزد؃ئكدججؠدئدڝحسدڪټقدددندضدآدضد؃حزدححكدټټؠدضجټدسددجقدقكندجدآدسجڪدزدحئكدككؠدئدټدزجڝدقدجضندنكآدضدڪدزد؃دكدئحؠدسضټدسجڝدكدټسندضدآدآسڪدكح؃دآدآضؠدسدټد؃ضڝدؠآددنزسآآدزحڪدكج؃دكححدؠحئدټدڝټڝدقدددنضجدآدضدڝدؠآ؃دؠدحددئئدڝحسدڝدقدددؠڝجدڪدضدڪجزدحدكدحدټ؃ئدڪجسدزئقدددندجدڪحضدڪدزد؃ئكدضدؠدئدڝحسدآ؃قدضجندسدآدضد؃حزدنضكدحئؠدئز؃آسددجقدحزندجحآدضحڪدزدكټكدحدؠدئضټدسدڝدكدن؃ندضحآدؠئڪدكج؃دكدحدؠدس؃ټدقحڝدقجددآدجدآدزدڪدك؃؃دسزحدؠدئدټدقجڝدقدددنئجدټجضدڪدكئ؃دقټحدؠدئدڝدسدڝدنئددآئجدزټضدڝجزد؃دؠضحدحكئدټدسد؃جقدددآسجدجكضدڪدزددجكدحدټزئدئكسدڝدقدددندجدڪئضد؃ززد؃جكدجدزسئدڝجسدسسقدجئندسدسضضد؃جزدنضكدئضؠحئز؃آسددئقدحدندجحآدضحڪدزدكټكدحدؠدئضټدسدڝدكدن؃ندضجآدؠئڪدكئ؃دكدحدؠدسدټدقجڝدقجددآدجدآدزحڪدك؃؃دسزحدؠدئدټدقئڝدقدددنئجدټجضدڪدكض؃دقټحدؠدئدڝدسدڝدنضددآضجدزټضدڝجزد؃دؠسحدحكئدټدسد؃جقدددآزجدجكضدڪدزددجكدحدټقئدئكسدڝدقدددندجدڪضضد؃قزد؃جكدجدزسئدڝئسدسسقدجضندسدسضضد؃ئزدنضكدحسؠدئز؃آسددضقدئؠندجحآدضحڪدزدكټكدحدؠدئضټدسدڝدكدئزندضئآدؠئڪدكض؃دكدحدؠدسحټدقئڝدقجددآدجدآدزجڪدقج؃دټزحدآجئدټدقضڝد؃زددندجدآدضدڪدكج؃دؠضحدؠجئدڝدسدڝدنئددؠججدئئضدڪدزد؃دؠسحدؠدئدټئسدحدقدددآسجدك؃ضدضآزدجدكدحدټسئدزضسدضټقددزټآجدڪزضدڝڪزد؃حكدححؠدئدسټسدڝدقددضندجدآدسدز؃زدحسكدقئؠدسزټدسدڝدقدجئندضسآدضجڪدكد؃دكدئضؠدسئټدجزڝدقدددندضزآدضدڪدزئ؃دنجحدؠدسقټدضټڝدقدددآدجدآدزقڪدكق؃دئټحدآجئدټدقكڝدڝكددندجدټجضدڪدكن؃د؃كحدؠدئدڪجسدڝدنؠدددكجدآدضدڪدزد؃دؠقحدټؠئدټجسد؃دئسددآزجدجسضد؃قزدجدجضحدټزئدزضسدددقحدزټآجدڪقضد؃ززد؃حكدححؠدئدسټسدڝدقددضندجدآدسدحآزدحزكدقئؠدسقټدسدڝدقدجضندضزآدضجڪدكد؃دكدئسؠدضجټدڪئڝدقدددندضقآدضدڪدزئ؃دآدحدؠدسقټدج؃ڝدنټددټدجدآدزقڪددض؃دڝححدؠززآټدقكڝدقضددنحجدآحضدڪد؃ټ؃دكدحدؠضئدټدسد؃دد؃ددآقجدحئضد؃كزد؃دكدحدټسئدڝقسدڝجقدجدندجدڪزضد؃سزدټزكدحدؠدئدڝكسدڝدقددئندئجآدضد؃نزدڝټكدحدؠدسدټدسددنقدجنندڪټآدسجڪدزدحؠكدككؠدئدټدزجڝدقدجآندنكآدضدڪدقج؃دكدئټؠدؠكټدسدڝدقدددندضنآدزټڪدزج؃دندڪسؠدسكټدټسڝدننددټدټضآدزكڪددض؃د؃ححدؠززآټدقنڝدآدددنحجدآحضدڪد؃ټ؃دكدحدؠضئدټدسد؃دآآددآكجدحئضد؃نزد؃دكدحدټزئدڝكسدڝجقدجدندجدڪقضدڝجزدقئكدحدؠدئدڝنسدڝدقددئندسدآدضد؃نزدټ؃كدټجؠدزدټدسددنقدؠضندئڝآدضزدآزدحؠكدئنؠدئحټدسحڝدقدنټندجدآدضضڪدزد؃دندؠ؃ؠدسنټدآئڝدنؠددندجدآدزقڪدكن؃دكجحدټدئدټدقكڝدنقددززجدآدضدڪدكؠ؃دكدحدؠئئدڪجسدڝدنآددكټجدآدضد؃دزد؃دؠآحدټآئدقټسد؃جقدددآټجدضكضدڪدزددجكدحدټڪئدئكسدڝدقدحجندجدڪڝضدزكزد؃دكدحدؠدئدڝآسددڝقددجندئدقسضد؃ؠزدزسكدئآؠدزدزضسددؠقدؠضندجڪآحضزدآزدحآكدئقؠدئحټدسحڝدقدنټندجدآدضضڪدزد؃دندسآؠدسؠټدآئڝدنآددندجدآدزكڪدكؠ؃دكجحدټدئدټدقنڝدكحددؠڝجحآدضدڪدكآ؃دكدحدؠجئد؃دسدڝدنآددز؃جدڪنضحددزد؃دؠآحدضئئدڝڪسدڝدجدددآنجدڪآضدڪجزدحدڝ؃حدټؠئدڝنسدزئقدددټټجدڪټضدڪدزد؃ئكدضدضضئدڝټسدآ؃قدڝسندسدسضضد؃ټزدنضكدضدؠدئز؃آسددڪقدحكندجحآدضحڪدزدكټكدحدؠدئضټدسدڝدكدضآندضټآدؠئڪدكڪ؃دكدحدؠدسؠټدقټڝدقجددآدجدآدزآڪدكن؃ددئحدؠدئدټدقڪڝدقدددنئجدڝدضدڪدكڪ؃دس؃حدئآئد؃دسدڝدنڪددئضجدضدضدڪزنآ؃دؠڝحدؠزئدټحسدڝحقدددجټجدآدضدڪضزد؃دكدجدڝآئدڝڪسدضئقدجڝندجدآدضد؃آزدحڪكدحجؠدسدټدسددټقدجنندكجآدضدڪدزدحڝكدحدؠدئكټدكدڝدقدجڝند؃؃آدآئڪدند؃دكدئڝؠدجآټدننڝدؠدؠضندضڝآدآسڪدټ؃؃دآدآضؠدسڝټدسدڝحدكددټدټضآدزڝڪدكآ؃دضدحدڪدڪضټدقڝڝد؃دددآزجدڝدڝضڪدكڝ؃دجضحدكڝئدټزكآڝدؠ؃ددؠججدآحضدڪحزد؃دحټحدؠدئدټضسدڝدقدحدڪآجدڪڝضدئئزدج؃كدحدؠدئدڝټسددڝقددجندضدآدضد؃ڪزدحنكدنئؠدئدټدسدح؃قدددندجئآدقدڪدزدج؃كدڝ؃ؠدسجټحكدڝدقدئ؃ندټضآدزضڪدززجآكدضدؠدق؃ټدسحڝدقحددندآټآدضدڪدزض؃دكدحدآدقآټدك؃ڝدڪئددټدجدآدضدڪدكڪ؃دآ؃حدؠجئدڝدسدڝدنڝددآنجدحجضدڪدزد؃دآدحدؠدئدټكسدحدقدددټدجدك؃ضدڝدزدجدكدحدڪدئدآآسدزققدئدئضجدڝدضدضسزدكحكدضدضضئد؃دسدڝدقحسؠندسدسضضدددزدحآكدححؠدزدزضسدحدقدكدندڝدآدقدقضزدجدكدآضؠدحنټدسزحآقدئحندجئآدضحڪدزح؃دكدؠټؠدئدټدسضڝدقدددؠدزآآدقدڪدټئ؃دآححدؠدئدټدقڝڝدؠدددنججدڪدضدڪدن؃؃دؠنحددجئدټدسدڝدؠحددندجدآكضدددزد؃دآححدق؃ئدآنسدحدقدددټحجدؠآضدئؠزدجدجضحدڪحئدئسسدڝآقدئدئضجدڝحضدڪدزحكڪكدضدضضئد؃حسددآقددجنحسدسضضددحزدقدكدڪدؠدزدزضسدححقدؠضندئڪآحضزدآزدججكدئآؠدئحټدسحڝدقدنټندجدآدضضڪدزد؃دندسآؠدزحټدآئڝدؠجددندجدآدق؃ڪدنح؃دكجحدټدئدټدكدڝدننددئدجدآدضدڪدنج؃دكدحدؠسئد؃دسدڝدؠجددز؃جدززضدددزد؃دآجحدحسئدڪحسحڝدؠټددټئجدآئضدڪدزددجحضحدڪضئدڝسسدڝدقدحججضجدڝسضدټضزد؃دكدججئضئد؃زسد؃حقحددندجدڪحضددئزدجزكدححؠدضدكسسدحجقدټآندسئآدقدقضزدججكدآضؠدسحټدسزحآقدئئندضڝآدضحڪدزح؃دكدؠټؠدئدټدسضڝدقدددؠدزآآدقجڪدټئ؃دآئحدؠدئدټدكدڝدؠجددنججدڪدضدڪدنح؃دؠنحددجئدټدسدڝدؠئددندجدآكضدددزد؃دآئحدق؃ئدڝ؃سححدقدددټئجدؠآضدحنزدجدجضحدڪئئدئسسدض؃قدئدئضجدڝئضدڪدزحكككدضدضضئد؃ئسددآقدټدندسدسضضددئزدقدكدئزؠدزدزضسدحئقدؠضندؠسآدضزدآزدجضكدجضؠدئحټدسحڝدقدنټندجدآدضضڪدزد؃دندسآؠدزئټدآئڝدؠضددندجدآدقحڪدنئ؃دكجحدټدئدټدكجڝدنندد؃ججدآدضدڪدنض؃دكدحدؠكئد؃دسدڝدؠضددز؃جددقضدددزد؃دآضحدنآئددنسدحدحضددټضجدجسضدزكزدجدجضحدڪضئدټدسحقكقدئدئضجدڝضضد؃آزدآدكدضدضضئد؃ضسدزدقدجزندسدسضضددضزدنضكددحؠدئز؃آسدحسقددڝندجحآدضحڪدزدكټكدحدؠدئضټدسدڝدكدئزندسضآدؠئڪدنس؃دكدحدؠدزجټدكضڝدقجددآدجدآدقئڪدكن؃دټزحدآجئدټدكسڝددضددندجدآدضدڪدنئ؃دآسحدؠجئدڝدسدڝدؠضددآنجدحجضدڪدزد؃دآزحدؠدئدټكسدحدقدددټزجدك؃ضدآجزدجدكدحدڪزئدآآسدجؠقدئدئضجدڝزضدضسزدكڪكدضدضضئد؃زسدڝدقحڪؠندسدسضضددززدحآكدحڪؠدزدزضسدحزقدكدندڝدآدقدقضزدجزكدآضؠدئزټدسزحآقدئقندضكآدضحڪدزح؃دكدؠټؠدئدټدسضڝدقدددؠدزآآدقزڪدټئ؃دآقحدؠدئدټدكضڝدؠزددنججدڪدضدڪدنس؃دؠنحددجئدټدسدڝدؠقددندجدآكضدددزد؃دآقحدق؃ئدئؠسدحدقدددټقجدؠآضدكسزدجدجضحدڪقئدئسسدسققدئدئضجدڝقضدڪدزحكككدضدضضئد؃قسددآقدټجندسدسضضددقزدقدكدڪدؠدزدزضسدحققدؠضندجزآدضزدآزدجككدجقؠدئحټدسحڝدقدنټندجدآدضضڪدزد؃دندسآؠدزقټدآئڝدؠكددندجدآدقسڪدنق؃دكجحدټدئدټدكزڝدكحددؠڝجحآدضدڪدنك؃دكدحدؠجئد؃دسدڝدؠكددز؃جدضزضدددزد؃دآكحدضئئدڝزسحڝدجدددټزجدڝكضدڪجزدحدڝ؃حدڪقئد؃زسدزئقدددټټجدڝنضدڪدزد؃جكدضدضضئد؃نسدآ؃قد؃ئندسدسضضددنزدنضكدټحؠدئدئؠسدحققدئنندججآدزدڪدزدجككدضقؠددزټدسدڝدقدئؠندجدآدضئڪدقج؃دكدضآؠدجټټدسدڝدندددندسآآدقآڪدحټ؃دنجحدؠدزټټدټكڝدقدددؠججدآدقڪڪدڪك؃دكدحدآجئدټدكڝڝدڝكددندجدآدضدڪدنآ؃دآڝحدؠجئدڪدسدڝدؠؠدددسجدڝآضددددض؃دآؠحدضضئدسسسدڝزؠآددټآجد؃نضدڪحزد؃حكدحدئټئدټدسدڝحقدددندئدض؃ضددؠزدسئكدضآؠدئدټدسدحكقدئؠندججآدزدڪدزدجنكدضقؠددزټدسدڝدقدئآندجدآدضئڪدقج؃دكدضټؠدجټټدسدڝدندددندسټآدقټڪدحټ؃دنجحدؠدزڪټدټكڝدقدددؠججدآدقڝڪدڪك؃دكدحدآجئدټدن؃ڝدڝكددندجدآدضدڪدنټ؃دټ؃حدؠجئدڪدحسڝدؠآدددسجدڝټضددددض؃دآآحدضضئدآ؃سدڝزؠآددټټجد؃زضدڪحزد؃حكدحدئټئدټدسدڝحقدددندئد؃آضددآزدسئكدضټؠدئدټدسدحنقدئآندججآدزدڪدزدجؠكدضزؠدآئټدسدڝدقدئټندجدآدضجڪدند؃دكدضټؠدد؃ټدكؠڝدؠدددندسټآدڝضڪدحق؃دكدكؠؠدزؠټدكټڝدقجددآدجدآدقآڪدنؠ؃دسزحدؠدئدټدكڪڝدقدددنئجدټجضدڪدنڝ؃دقټحدؠدئدڝدسدڝدؠڝددټڝجدزټضدڝجزد؃دټ؃حدحكئدټدسد؃جقدددڪدجدجكضدڪدزددجكدحدڝحئدئكسدڝدقدددندجدڝڝضدححزد؃جكدجدؠدئد؃ڪسدسسقدئڝندسدسضضددڪزدنضكدآڝؠدئز؃آسدحڝقدئكندجحآدضحڪدزدكټكدحدؠدئحټدسدڝدكدن؃ندسڪآدؠئڪدنڝ؃دكدحدؠدزآټدكڪڝدقجددآدجدآدقټڪدنؠ؃دسزحدؠدئدټدكڝڝدقدددنئجدټجضدڪدؠ؃؃دقټحدؠدئدڝدسدڝدآ؃ددڪ؃جدزټضدڝجزد؃دټدحدحكئدټدسد؃جقدددڪحجدجكضدڪدزددجكدحدڝجئدئكسدڝدقدددندجد؃؃ضدحجزد؃جكدجدزسئد؃ڝسدسسقدض؃ندسدسضضددڝزدنضكدسڝؠدئز؃آسدج؃قدضجندجحآدضحڪدزدكټكدحدؠدئحټدسدڝدكدضآندسڝآدؠئڪدؠ؃؃دكدحدؠدزټټدكڝڝدقجددآدجدآدقڪڪدنز؃ددئحدؠدئدټدن؃ڝدقدددنججدڝدضدڪدؠ؃؃دس؃حدڝ؃ئد؃دسدڝدآ؃ددئضجدزئضدڪدحد؃دآڪحدڝ؃ئدټجسدددڪ؃ددټڝجدڝڪضدئجزد؃دآټحدڝدئدټدسدڝزقدئدئضجد؃دضدټآزدضئكدضدضضئدددسدڝدقحنكندسدسضضدحدزدحآكدآؠؠدزدزضسدجدقدكدندڝدآدقدقضزدئدكدآضؠدززټدسزحآقدضحندض؃آدضحڪدزح؃دكدؠټؠدئدټدسحڝدقدددؠدسدآدكدڪدټئ؃دټححدؠدئدټدكڝڝدآدددنحجدڪدضدڪدنڝ؃دكئحدجحئدڪجسدڝدآدددئټجدآدضدڪدزد؃دآڝحدڝدئدټجسدددقدددڪ؃جدڝڝضدڝڝزح؃دكدحدڝحئدټدسدڝجقدئدندجد؃حضدؠ؃زدكجكدضدؠدئددحسدكئقدجزنحجدآدضدح؃زدئحكدحجؠدسدج؃سدجدقدض؃ندؠئآدضددټزدئجكدحدؠدئئټدكدكضقدضجند؃؃آدنڪڪدندنضكدسجؠدڪضټدټضڝدقجسسندزئآدس؃ڪدزد؃دندسآؠدقجټدآئڝدآئددندجدآدكدڪدؠج؃دكجحدټدئدټدنحڝدآددد؃ججدآدضدڪدؠئ؃دكدحدؠزئد؃دسدڝدآئددكآجدآزضحددزد؃دټئحدؠدئحسكسدحدحضددڪئجدڪآضدضقزدجدجضحدڝئئدضدسدؠدقدئدئضجد؃ئضدقضزدئقكدحزڪآئددضسدحنقددحندجحآدضدزټزد؃دكدححؠدئدټدزدئققدضئندكئآدكضڪدزد؃دكدسحؠدقئټدسحڝدندددندزحآدك؃ڪدڝئ؃دكدحدؠدقئټدسدڝدقئددټدجدآدكئڪدئ؃؃دضټحدڪدئدټدنئڝدحضددقحجدآجنسڪدؠض؃دنټحدؠدئدڪدنآڝدآئدد؃ئجد؃ضضدڪدزد؃دټححدڝئئدټجسدددقدددڪججد؃حضدئجزد؃دكدحدڝضئدټدسدڝزقدئدندجد؃ضضدټآزدزجكدضدؠدئددضسدڝدقحنكندسدسضضدحضزدحآكدسحؠدزدزضسدجضقدكدندڝدآدقدقضزدئضكدآضؠدحدټدسزحآقدضسندجڪآدضحڪدزح؃دكدؠټؠدئدټدسحڝدقدددؠدقټآدكضڪدټئ؃دټسحدؠدئدټدنجڝدآضددنحجدآدضدڪدؠج؃دټجحدؠدئدڝدسدڝدآئددڪ؃جدئئضدڪدزد؃دټسحدؠدئدټئسدحدقدددڪسجدك؃ضدزئزدجدكدحدڝسئدزضسدسزقددزټآجد؃زضددآزد؃حكدححؠدئدسټسدڝدقددزندجدآدسدقدزدئسكدقئؠدقزټدسدڝدقدضئندزسآدضجڪدقج؃دكدسئؠدضنټحسدڝدقدددندزئآدكئڪدزد؃دؠدحدؠدقضټدن؃ڝد؃ئددندجدآدكزڪدزد؃دكئحدڪدئدټدنزڝدض؃ددد؃جدڝدضدڪدؠز؃دجضحدڝآئدټزكآڝدآقددڪضجدآحضدڪحزد؃دحټحدؠدئدټزسدڝدقدحدنضجد؃زضدئئزدئقكدحدؠدئددضسدجزقددجندئجآدضدحضزددنكححدؠدسدټدسدجضقددئندؠحآدسجڪدزدئزكدحڝؠحئدټدسدڝدقدضضندززآدضجڪدكد؃دكدسسؠدقضټدزڝڝحقدددندزقآدضدڪدزج؃دآدحدؠدققټدج؃ڝدسؠددټدجدآدكقڪددئ؃دؠزححؠدڝدټدنسڝدآقددنججدڪدآنڪدؠز؃دټسحدققئدټدسدڝدآكددندجدآسضدددزد؃دټكحدق؃ئدڝئسححدقدددڪكجدسضضدڪقزددجكدحدڝنئددټسدڝدقدجدندجد؃نضدحنزدآنكدئدؠدئددنسدجنقدڝكندئدآدضدحكزدزسكدسنؠدئدټدسدجنقددئندجدآدسجڪدزدئؠكدسټؠدئدټدقدزڝقدضؠندزؠآدټآڪدكدكسكدسؠؠدقؠټدكقڝدكجددندزآآدكټڪدزد؃دؠدحدؠدقآټدنآڝد؃آددآدجدآدكآڪدؠآ؃دڝآحدآجئدټدنټڝدآټددندجدڪدضدڪدؠټ؃دټټحدجآئدڝدسدڝدآټددڪټجدڪحضحڪدزد؃دټنحدڝټئدټحسد؃دئسددڪكجدحقضدحنزد؃زآآحدڝنئدڪسسدڝحقددحندجدضټضدڪدزد؃حكدحدؠدضدضنسدجكقدزئندزنآدضدڪدزدئزكدسكؠدئحټدقدڝدقدضزندزسآدحټڪدزد؃دكدسكؠدئدټدسجڝدؠدددندزكآدح؃ڪدزؠ؃حكزضآؠدقنټدقټڝدقحددنججدآدڪټڪدزد؃دكححدؠدئدټدڝټڝدقدددنضجدآدضدڝدآق؃دټكحددئئددنسدڝدقدددڪزجد؃كضدڪحزدحدكدحدڝزئددضسد؃ڝقحددندجد؃كضدڪدزد؃جكدضدؠدئددكسدآ؃قدجكندسدآدضدحكزدنئكدئڪؠدئدقدسدجزقدضكندججآدضددټزدئقكدحدؠدئدټدقدض؃قدضكندززآدڝدڪدزدجټكدسؠؠدئدټدسسڝدؠدؠضندزؠآدح؃ڪدكك؃دؠدجټؠدقآټدسحڝدجدددؠدجدآدكؠڪدڪس؃دټآحدټدئدټدنآڝدقحددؠئجحآدضدڪدؠآ؃دكجحدؠجئدڪدسدڝدآؠددسآجد؃آضدددزد؃دټؠحدضضئدجزسدڝزؠآددڪآجدڝئضدڪحزد؃جكدحدئټئدټدسدڝحقدددندجدضټضدڪدزدئقكدحدؠدضدزسسدجؠقدزئندزآآدضدڪدزدئككدسؠؠدئجټدقدڝدقدضنندجحآدض؃ڪدقج؃دكدسآؠدنزټدسدڝدقدددندزنآدكآڪدزح؃دؠدحدؠدقنټدنزڝدد؃ددندجدآدكآڪدزد؃دكئحدڪدئدټدنآڝدض؃ددټڪجدڝدضدڪدؠآ؃دز؃حدآزئح؃دسدڝدآآددئضجدټزضحڪدحد؃دټنحدڝآئدټجسدددجنددڪؠجدآحضدڪ؃زددجكدحدڝټئدڪزسحڝدقدددندجد؃ؠضدحټزد؃حكدئدؠدئددؠسدجزقدڪټندجدآدضدحټزد؃دكدحجؠدزدټدسدجټقدڪ؃ندؠڝآدضزدآزدئڪكدضدؠدئحټدسئڝدقدنټندجدآدضحڪدزد؃دكدؠټؠدئدټدنكڝدقدددندآټآدضدڪدؠن؃دكدحدآدكقټدنټڝدڪئددڪڪجدآدضدڪدؠؠ؃دټټحدؠحئدڝدسدڝدآؠددڪضجدټڝضحڪدزد؃دټټحدؠدئدټجسدحدقدددڪټجدك؃ضدڝززحجدكدحدڝټئدزئسددڪقدددضدجد؃ؠضدحټزد؃جكدئدد؃ئددآسدجؠقدڪزندجدڝټضدحڪزد؃دكدحضؠدزدزضسدجڪقدڪ؃ندجؠآدزدسڝزدئڝكدححؠدؠنټدقدزڝقدضڝندزڝآدضؠڪدقدآسكدسڪؠدؠسټدنڝڝدؠدؠضندزڪآدڝضڪدزؠ؃دكزضآؠدقڝټدقؠڝدقحددنحجدآدڪټڪدزد؃دكححدؠدئدڪدحڝڝدآڪدد؃ئجد؃ڝضدڪدزد؃دټآحدڝڪئدټجسد؃دقدددڪقجدآؠضدحآزدحدكدحدڝآئدټحسدڝ؃قدحجندجد؃ڪضدڪؠزد؃دكدحدؠدئددآسدجڪقددحندضدآدضدحآزدئؠكدڝزؠدئدټدسدجڪقدددندجضآدقدڪدزدئڪكدڝ؃ؠدؠټټدقدڝدقدضڝندجحآدآنڪدكدقڝكدسڝؠدقڝټدټټڝدكدټسندزڪآدآسڪدؠڝ؃دآدآضؠدقڪټد؃ضڝدڝټددنزسآآدكڝڪدزټ؃دكححدؠحئدټدڝټڝدقدددنحجدآدضدڝدجڝ؃دټڪحددئئددڝسدڝدقدددڪآجد؃ڪضدڪجزدددكدحدڝقئدئټسدجآقدجدندجد؃آضدڪحزد؃؃كدججؠدئددڪسدسټقدددندجدآدضدحآزدئڪكدححؠدسدټدسدجآقدضؠند؃زآدضدڪدزدئڪكدحدؠدئضټدكدڝدقدضڪند؃؃آددكڪدكد؃دكدسڝؠدئحټدټنڝدندكڝندزڝآدكڝڪدجك؃دندڪسؠدقڪټدټسڝدآڝددټدټضآدكڪڪددض؃دضكحدؠززآټدنڝڝدؠضددنحجدآحضدڪد؃ټ؃دكدحدؠحئدټدسد؃دئڝددڪڪجدحئضدحڝزد؃دكدحدڝآئددڪسدڝجقدحدندجد؃قضدنكزدئآكدئدؠدئددآسدڝحقدد؃ندئجآدضدحڪزدآككدحدؠدئدټدسدجآقدضڪندجحآدزدڪدزدئآكدسؠؠددزټدسدڝدقدضڪندجدآدضضڪدند؃دكدسڪؠدد؃ټدكسڝدندددندزڝآدضحڪدڪن؃دؠدنڝؠدقڝټدنڝڝدؠسددؠدڝسآدكڪڪدڪس؃دټڝحدڪدڪضټدنڪڝدحضددټسجدآزقآڪدؠڝ؃دننحدؠحئدټحسدڝددټددندجدآحضدڪدزدددضڝحدڝڪئدجئسدجڝقدددندجد؃آضدحڪزد؃جكدجدؠدئددقسدحسقدضآندضدآدضدحآزد؃حكدح؃ؠدضجټدسدجڪقدئسندجدآدضدڪدزدئآكدسڪؠدئحټدقدڝدقدضآندزؠآدحزڪدزد؃دكدسڪؠدئدټدسضڝدؠدددندزڪآدح؃ڪدئض؃دؠدحدؠدقڝټدسحڝدڝنددآدؠڝآدكڝڪدؠڝ؃دسضحدآد؃سټدنڪڝدڝسددڪڝجدڝدڝضڪدؠڪ؃دجضحدقضئدټزكآڝدآڝددټقجدآحضدڪحزد؃دحټحدؠدئدټحسدڝدقدحدسڝجد؃ڪضدئئزدئڝكدحدؠدئددآسدجڪقددجندئدآدضدحقزدټضكدسآؠدسدټدسدجآقددحندج؃آدسجڪدزدئڪكدڝضؠدئدټدسدڝدقدضآندزڪآدضحڪدكد؃دكدسآؠدقؠټدجزڝدقدددندزڪآدضدڪدزض؃دآدحدؠدقڪټدج؃ڝدنقدحآدجدآدكڝڪدزح؃د؃نحدټدآڝټدنڝڝدآڝددآقجحټددسڪدؠڪ؃د؃سحدڝڝئد؃د؃ضڝدآڪددئضجدڪقضحڪزنآ؃دټڝحدټضئدټحسدڝحقدددجټجدآدضدڪحزد؃دكدجدزڝئددڪسدضئقدضڝندجدآدضدحآزدئڪكدحجؠدضدټدسدجققدجقنحزآآدزدڪدزدئآكدححؠدئ؃ټدزجڝدقدضڪندضقآحضدڪدزد؃دكدسآؠدقڪټدسحڝدندددندزآآدكؠڪدئز؃دكدحدؠدقڪټدسدڝدقضددټدجدآدكڪڪدئ؃؃ددؠحدټدئدټدنڝڝدقحدددنجدڪدټڝڪدؠڝ؃دټڝحدجؠئدڪدحسڝدآڪدددسجد؃ڝضددددض؃دټڪحدضضئدضؠسدڝزؠآددڪڝجدټحضدڪحزد؃حكدحدئټئدټدسدڝحقدددندئدقڝضدحڪزدسئكدسڝؠدئدټدسدجآقدضڪندججآدسدڪدزدئقكدنؠؠدقآټدقدڝدقدضآندجحآدض؃ڪدقج؃دكدسڪؠدآؠټدسدڝدقدددندزآآدكڪڪدزح؃دؠدحدؠدقآټدنؠڝدضزددندجدآدكڪڪدزد؃دكضحدڪدئدټدنڪڝدض؃ددؠججحڪدضدڪدؠڝ؃دكححدحنئدڝدڪڝڝدآڝددڪڝجدټجضحڝدجس؃دټڪحدحسئددڝسدحدحضددڪڪجدسضضدڝجزح؃زآآحدڝڝئدټسسدڝحقددحندجدضټضدڪدزد؃حكدحدؠدضدكڝسدجڪقدزئندزڝآدضدڪدزدئآكدسڪؠدئجټدزدڝدقدضقندئجآحكآڪدكد؃دكدسآؠدئحټدس؃ڝدكجددندزڪآدسجڪحزد؃دكدحدؠدقآټدنڪڝدقحددآدجدآدكآڪدؠؠ؃دسزحدؠدئدټدنڪڝدقدددنضجدڝدضدڪدؠڪ؃دس؃حدنآئدڝدسدڝدآڝددنحجدجنضد؃دڝڝ؃دټڝحدڝڝئدآآسد؃دئسددڪڪجدجسضدحڝزدجدجضحدڝڪئدزضسدڪآقددزټآجد؃ڝضدڪكزد؃حكدححؠدئدسټسدڝدقددحندجدآدسدنڝزدئڪكدقئؠدقڝټدسدڝدقدضآندزڪآدضجڪدقد؃دكدسقؠدجآټدنآڝدندددندزآآدضحڪدز؃؃دنجحدؠدقڪټدضآڝدقدددندجدآدكآڪدؠڪ؃دكححدټدئدټدنآڝدآؠددززجدآدضدڪدؠڪ؃دكدحدؠضئد؃دسدڝدآڪددز؃جدقڝضد؃دزد؃دټڝحدؠحئدئنسددد؃ڝددڪڝجد؃ڝضدنڝزدددضسحدڝڪئدئسسدجڝقدئدئضجد؃ڪضدقضزدآڝكدحزڪآئددڝسد؃ئقددحندجحآدضدزټزد؃دكدححؠدئدټدزدؠڝقدضڪندكئآدكڝڪدزد؃دكدسآؠدقڪټدسجڝدكدددندزقآددڝڪدؠآ؃دؠدحدؠدقآټدسحڝدق؃ددؠججدآدكڪڪدجڝ؃دكدحدؠدئدټدنآڝدآڪددنحجدڪدضدڪدؠآ؃دټؠحدقزئدټدسدڝدآڪددندجدآضضدددزد؃دټڪحدق؃ئدضنسدددقدددڪڝجدآحضدضنزدحددڝحدڝڝئددڝسدزنقدحدسسجد؃ڪضدضسزدئڝكدضدضضئددڪسدكضقدكنندجزڝآضدحڝزد؃نكدححؠدئحټدسدقټقدددندجحآدضدڪدقدآڝكدسڪؠدنئټدنڝڝدقدددندزآآدكڪڪدزج؃دندحدؠدققټدڪنڝدآآددآدجدآدكآڪدزح؃دك؃حدآجئدټدنڪڝد؃نددندجدآدضدڪدؠآ؃دټڪحدؠحئدڝدسدڝدآآددڪؠجدكزضدڪدزد؃دټڪحدؠدئدټضسدحدقدددڪڪجدك؃ضد؃نزدحدكدحدڝڝئدټحسدسنقدجدحڝجد؃ڝضدحڝزدحنكدجدزسئددڪسدسسقدضڝندسدسضضدحڪزدنضكدئنؠدئز؃آسدجڝقدئ؃ندجحآدضحڪدزدكټكدحدؠدئحټدسدڝدكدټڝندزڪآدؠئڪدؠڝ؃دكدحدؠدقآټدنڪڝدقجددؠدجدآدكقڪدكن؃دټآحدټدئدټدنآڝدقحددن؃جدټجضدڪدؠڪ؃دؠنحدؠدئدټدسدڝدآآددڪڪجدآحضد؃دزد؃دټآحدڝؠئدنزسدڝدقدددڪڪجدآدضدڪضزدجدكدحدڝڪئدن؃سدنڪقدجدندجد؃ڝضدڪحزدزنكدئدجڝئددڝسدجڝقدآڪندئدقسضدحڪزدزسكدسڝؠدزدزضسدجڪقدؠضندڪڪآدضزدآزدئڝكدضسؠدئحټدسحڝدقدنټندجدآدضحڪدزد؃دندسڪؠدقڪټدآئڝدآڝددندجدآدكآڪدؠڪ؃دكجحدآدئدټدنقڝدجڪددڪآجدڪدضدڪدؠآ؃دكححدؠ؃ئدڪجسدڝدآڪددضڪجدآدضدڪدزد؃دټآحدڝڪئدټحسدددقدددڪآجد؃ضضدڝڝزح؃دكدحدڝڪئدټدسدڝجقدئدندجد؃ڪضدؠ؃زدآسكدضدؠدئددڪسدكئقدجزنحجدزدضدحآزدئڪكدحجؠدسدقجسدجټقدضآندټدآدضدڪدزدئڝكدحدؠدئئټدكدڝدقدضڝند؃؃آددسڪدكد؃دكدز؃ؠدئحټدئئڝدقدددندق؃آدضجڪدزج؃دندحدؠدقڝټدحآڝدټ؃ددټدجدآدكڝڪددض؃دججحدؠدئدټدنټڝدآڝددنججدڪدضدڪدؠڪ؃دكححدؠ؃ئدڪجسدڝدټ؃ددئججدآدضدڪدؠس؃دټڪحد؃؃ئدټحسدددڪ؃ددڪڪجد؃آضدؠټزد؃دآټحد؃؃ئدټدسدڝجقدئدئضجدد؃ضدؠ؃زدسككدحزڪآئدحدسدڝؠقددحندجحآدضدزټزد؃دكدححؠدئدټدزددسقدس؃ندكئآدندڪدزد؃دكدسڪؠدك؃ټدسجڝدندددندزڝآدكآڪدئټ؃دكدحدؠدكدټدسدڝدقجددټدجدآدندڪدئ؃؃دټدحدؠززآټدؠحڝدقدددنحجدآجضدڪد؃ټ؃دكدحدؠحئدټدسدڝددټددندجد؃ټضدڪدزدددټآحد؃دئدجئسدئحقدددندجد؃ڝضدجدزد؃جكدئدؠدئدح؃سدجآقدن؃ندجدآدضدجحزد؃دكدحئؠدزدټدسدئحقدڪ؃ند؃ئآدقدڪدزدضحكد؃؃ؠددئټدكدكضقدسحندټضآدحئڪدزدؠدكدز؃ؠدكحټدسجڝدندآنندقدآدضحڪدز؃؃دنجحدؠدكجټدجئڝدقدددندجدآدندڪدآج؃دكححدټدئدټدؠدڝدآآددزټجدآدضدڪدآج؃دكدحدؠجئد؃دسدڝدټجددز؃جدزڝضدڪزنآ؃دڪئحدؠحئدټحسدڝجقدددجټجدآدضدڪحزد؃دكدحدئټئدټدسدجټقدددندئد؃آضدججزدسئكدزئؠدئدټدسدئدقدسجندججآدزدڪدزدضحكدسضؠدضڝټحسدڝدقدسئندجدآدضجڪدند؃دكدزئؠدد؃ټدزآڝحؠدددندقئآدڝئڪدكز؃حكدټدؠدكحټدؠئڝدقجددآدك؃آدنجڪدآح؃دجزحدآجټضټدؠضڝدقحدحندجدآد؃دڪدآج؃دڪضحدؠجئدټدؠ؃ڝدقدددنحجدآدضدحؠزد؃دكدحدؠسئدټدسددآقسددندجدحزؠټئحټقزئجنج؃ؠدئدټدنئس؃ڪڝزز؃نكقڪدكضضجڪ؃زدڝضك؃حقنڝڪزسؠڝدقدددڪقكسجضكئض؃ټڝسزڝنققحئټضټټسدڝدقدضض؃سكټحسآضئسؠئز؃ڝڝقزدننقض؃سقڝدقدددڝجكسحزآجئسڪئسككڪحدؠدئدټدڪؠڝدقدددندجدآدضد؃دزد؃دكدحدؠدئدټضسدڝدقدددنججدآدضدڪدزدحدكدحدؠجئدټجسدڝحقدجدندجدآجضدڪجزد؃جكدحدؠدئدټدسدڝجقددحندجدآدضدڪدزد؃حكدحدؠدسدټدسدڝدقدددندجسآدضدڪدزد؃جكدحدؠدئدټدقدڝدقددجندججآدضئڪدزد؃دكدحجؠدئئټدسدڝدقدددندجدآدضدڪدزح؃دكدحدؠدئدټدسحڝدقدددندجدآدضدڪدزز؃دكدحدڝدض؃ټدسدڝدآئق؃؃ڝكزحنؠق؃دؠضزج؃؃كددضؠ؃ئقآڝدآقسددندجدحزؠټئحټقزئكححآؠدئدټدنئس؃ڪڝزز؃نكقڪدكڝئحټڪسسحضحؠؠدئدټدنقضسڝضضئد؃كڝحزؠنئقڪئسؠكقحدؠدئدحجآسضزڝجزسدئككڪآضؠڪدزد؃دڪئقححزنسدئټ؃ضڝڪززن؃قئئآدضدڪدزد؃ڝكدحدؠدئدټدسدڝدندددندجدآدضدڪدزز؃دكدحدؠدئجټدسدڝدقدددآدجدآدضجڪدزج؃دكجحدټدئدټدسجڝدقجددنحجدآزضدڪدزج؃دككحدؠحئدټدسدڝضجټددندجدآكضدڪحزد؃ضئټحدؠدئدټآسدڝحقدددڝئجدآجضدڪدزد؃دكدئدجڝئدټجسدڝجقددجندضدئڝضدڪجزد؃جكدحئؠدئددسسدڝدقددجندجحآدضد؃جزد؃دكدححؠدئدټدقدڝدقدددندجدآدضسڪدزد؃دكدحجؠدئدټدسدڝدندددندججآدضجڪدزض؃دكدحدؠدئجټدسئڝدقدددندجدآدضدڪدزد؃دكححدؠدئدټدسدڝدقحددندجدآدضدڪدزد؃حكححدؠدئدڝآسقڝدقدددڝئككج؃آقحزآ؃ضزكئحدؠدئدټدؠئڝدقحددندجدآدضدڝدجس؃دكححدؠحئدټدسدڝدټ؃ددندجدآحضدڪدزد؃دكدحدؠدئحټجسدڝدقدڪئنقجدآدضدض؃ڪدزضڝنك؃دڝؠئحسسآڝدقددد؃ڪكحجككضئنڪئزضڝحقڝدئنسټضسدڝدقدددڝئجدآحضدڪدزد؃دكدئدجڝئدټحسدڝحقددحندئدقسضدڪحزد؃جكدحدؠدئدح؃سدڝدقددحندجدآدضدڪدزد؃دكححجؠدئدټدندڝكقدددندكضحنآئضضټحسڝڝئقسقئئقټدسدڝدڝ؃قددضكنج؃ؠڝضئزض؃دكدحدؠدكئټدسحڝدقدددندجدڪدټڝڪدزح؃دكححدؠجئدڪدحسڝدقحددنحجدآدضدڪدآ؃؃دكدحدؠحئدټدسدڝدقدددندجحآجضدڪدزد؃حنححدؠدئددئآكضحڪڝزق؃سقضحكؠسئڪټسض؃؃دكضدنؠ؃جڝ؃نڝڝقدددندقئحسؠئضضټنز؃ڝڝئدڝجؠ؃ئجآضضسڝجدزندجدآدضددنزد؃حكدحدؠدئدټدقدڝدقددحندجحآدضحڪدقج؃دكدحئؠدئجټدسدڝدقدددندجضآدضدڪدزد؃دكدحدؠدئحټدسضڝدقحددندجدآدضدڪدزح؃دكدحدؠدئدټدسدڝحقجددندجدكئضآڪدزد؃د؃زقنحئننججآټضسټ؃زڝ؃ټننحؠضقڪدزد؃د؃؃كدحضننئ؃آڝسئقضددندجدآدنئڪدزح؃دكدحدؠدئدڝدڪڝڝدقحددنحجدآجضدڝدجس؃دكححدؠحئدټدسدڝدټ؃ددندجدآحضدڪدزد؃دكدحدؠدئحټجسدڝدقدؠننقجدآدضدض؃ڪدزضڝنك؃دڝؠئڝآسؠڝدقددد؃ككسححؠټضضټكئجڝحكجحئئضټدسدڝدقدسئندجحآدضدڪدزد؃دؠدنڝؠدئحټدسحڝدقحددؠدڝسآدضحڪدزج؃دكدحدؠدك؃ټدسدڝدقحددندجدآدضدڪدزد؃حكجحدؠدئدنئسضڝدقدددڝضكسجكآضحدقح؃دكدحدڝئنكجحآڝضقڪسسض؃ككسحڪؠسج؃ڪدزضڝنك؃دڝئزټدسدڝدقدئنندجحآدضدڪدزد؃دؠدحدؠدئحټدسحڝدقجددؠججدآدضئڪدزح؃دكدحدؠدئدټدسضڝدقدددندجدآدضدڪدزح؃دكضحدؠحئدټدسدڝدقدددنحجدآدضدڪدزد؃دكدححؠجئدټدسدټككحددندجد؃ئؠكئحټڝسقڝسزضدكنسجڪآسئ؃ڝدقض؃نن؃حڝ؃ڝڝحزد؃دكدز؃دجنؠجسآئسضندضج؃حكئحآؠقضجڪ؃زسڝڝقضؠزئدټدسدڝدؠنددنحجدآدضدڪدزدحدكدحدؠحئدټحسدڝحقدحجندجدآئضدڪجزد؃دكدحدؠدئدټضسدڝدقدددندجدآدضدڪحزد؃ضكدححؠدئدټدسدڝدقددحندجدآدضدڪدزد؃دكدحئؠدئدټدقآڝؠقدددندزټج؃ؠحئضؠئز؃ڝڝقزدننقسضسسڝدقددد؃زكټححؠقضئڝ؃د؃كدحدؠدقئئ؃آڝضزڪنزقآدزضججآ؃ضدټضز؃؃ققڝؠقئدټدسدڝدڪڪددندجدآدضدڪدزدحدكدحدؠدئدټدسدڝحقدددندجدآجضدڪدزد؃دكدئدؠدئدټجسدڝجقددجندضدآدضدڪجزد؃جكدحئؠدئدټدسدڝدقددجندجحآدضدڪدزد؃دكدححؠدئدټدسدڝدقدددنحججآدضدڪدټؠ؃سكدحدؠدنئجكآحضڪڝئڪئنقجدآدضدض؃ڪدزضڝنك؃دڝؠئټضسدڝدقدددڝئجدآحضدڪدزد؃دكدئدجڝئدټحسدڝحقددجندئدقسضدڪحزد؃حكدحدؠدئدح؃سدڝدقددحندجدآدضدڪدزد؃دكححجؠدئدټدآؠ؃حقدددندزئحكؠحئڝټقسسڪضقكدسنڪجسؠ؃سدڝضزند؃كڝزڝسحڪدزد؃دڪققندڝنضئ؃ټقددآجزح؃ئكآحقآجض؃ڪسسڝڝضحزؠدئدټدسدحنقددحندجدآدضدڪدكد؃دكدححؠدئحټدسحڝدكجددندجئآدضجڪدزد؃دكدحدؠدئضټدسدڝدقدددندجدآدضحڪدزض؃دكححدؠدئدټدسدڝدقحددندجدآدضدڪدزد؃حككحدؠدئدددسڝڝدقدددڪؠنسحڪآدحكټحسئڝآزضح؃نقجقآټضسدضدنندجدآدكئئكټحزجڝحقئحضنسئجندڝكقدددندزكجسؠڪئحټڝز؃ڝنقضسڝئسټدسدڝدڪززټ؃حكقجئجكڪضزد؃دكدققدحنڪجسئكڝآقدددندزټج؃ؠئئحټټضدڝټقححننسئجڝضڝققدددندقدحټؠحضنټسزج؃ئجزؠنئدټدسدجؠڝسزڪددقدج؃آقئسڪج؃ڪكدحدؠدئدحئسدڝحقدددندجدآدزدسڝزد؃حكدححؠدئضټدقدزڝقددحندجحآدضحڪدززكنكدححؠدئزټدسحڝدقحددنضڪټآدضدڪدزز؃دكححدؠضڝټټدسدڝدقټددنحجدټجټآڪدزح؃دكسحدؠدئدڝدڪئڝدقحددنحجدآقضد؃دزد؃دكححدؠحئدټزسدددقدددنحجدآحضدڪجزدحدكدحدؠحئدټحسدڝئقدحدندجدآحضدڪكزد؃دكدحد؃؃ئدټدسدڝحقدددندجدآدضدڪدزح؃جكدحدؠدڪنڪكسدڝدقدزئ؃ككححڪآئج؃ڪسزضڝټقندڝنسحضټجضحڪڝقئددكحججؠسئڝټئزنئڝحقؠدئدټدټ؃سدڝضزند؃كڝجئضضڪدزد؃دكدزئؠدئحټدسدڝدقدددآدؠڝآدضحڪدزح؃دكجحدآد؃سټدسحڝدقحددندجدآدن؃ڪدزد؃دكححدؠدئدټدسدڝدقددحنقجدآدضدنحزد؃دكدحدؠدئد؃دندئسقكددندجد؃كآسئڪټحسڝ؃؃قندضئحټنسدڝدقدضئ؃ككحججؠحئئڪضسس؃جححؠقئدټدسدئدڪټزحدنكسججآئحدزض؃دكدحددقنحجڪآسكنقنددندجددقؠحئټټآضئ؃دقسدسنضڪزسآڝدقدددڪټن؃حئؠحئټآدسټڝحكندسؠجټنسدڝدقددزجنجدآدضدڪكزد؃حكدححؠدئضقټسدڝدقددكندجحآدسجسآزد؃حكدحسؠدئدټدقدئجقددحندجحآدضضڪدكد؃دكدححؠدئحټدسقڝدندددندجحآدضحڪدزئ؃دؠدحدؠدئحټدسحڝدقجددټدجدآدضحڪدزز؃دكححدؠدك؃ټدسدڝدقحددندجدآدضدڪدزد؃حكجحدؠدئدجؠسقڝدقدددد؃ندجضؠنض؃ټڝزئد؃جضؠدئدټدټ؃سسڝضس؃؃زقزحنؠسضقؠحزج؃جك؃حقؠئدئټ؃ضټڝ؃قجنضجدآدضدڪدآئ؃دكححدؠدئدټدسددد؃ڝددنحجدآحضدڪحزدددضسحدؠحئدټجسدڝدقدددڝ؃جدآدضدڪحزد؃دكدحدؠدئدټدسحڝجقدددنددكټجضدڪدزدضئڝسقئحضننئ؃آڝددآجزح؃ئكآحقآجض؃ڪسسڝڝضآنآحئدټدسدجئڪكزح؃ڝكقحسنضئكټسسڪڝسز؃حدؠضجنټ؃ضڝقزددندجدآدقنڪدزح؃دكدحدؠدئدڝدسدڝدقحددنحجدآجضدڝجزد؃دكئحدؠحئدټدسدڝدقدددنضجدآدضدڪدزد؃دكدحدؠحئدټضسدڝحقدددندجدآدضدڪحزد؃دكدحدؠدئدټدسحڝجقدددندآضآقضدڪدزدز؃؃دكضدنؠ؃جڝټئټككئددندجدحجآ؃ضكؠزسنڝټقټ؃ضؠججحآڝسئڝدزحدجكسحڝؠئضنزض؃دكدحدؠدكئټدسحڝدقدددندجدڪدټڝڪدزح؃دكححدؠحئدڪدحسڝدقحددنججدآدضدڪدآ؃؃دكدحدؠحئدټدسدڝدقدددندجحآجضدڪدزدؠڝكڪحدؠدئددضآنسئڪحزج؃ټكسحضزدجضټسزك؃ضڝئآحئدټدسدجئڪكزح؃ڝكقحسنضئكټسسڪڝسز؃حدؠضجنټ؃ضڝقزددندجدآدقنڪدزح؃دكدحدؠدئدڝدسدڝدقحددنحجدآجضدڝجزد؃دكئحدؠحئدټدسدڝدقدددنضجدآدضدڪدزد؃دكدحدؠحئدټضسدڝحقدددندجدآدضدڪحزد؃دكدحدؠدئدټدسحڝجقدددندآضآقضدڪدزدز؃؃دكضدنؠ؃جڝټئنڝكسددندجدحئؠكئحټڪزئټزقندټنټحضټجضحڪڝقئددكحججؠسئڝټئزنكضحدؠدئدټدؠئڝدقحددندجدآدضد؃دڝڝ؃دكححدؠحئدټحسد؃دئسددنحجدآجضدڪدزد؃دڪ؃حدؠدئدټحسدڝدقدددندجدآدضجڪحزد؃دكدجزؠسئدټدسدجئڪټق؃دئكسآقضدڪدزد؃زؠنحدؠحئدټئسدڝحقدددندجضزټضدڪدزد؃ئكدححؠدئضقټسدڝدقددزندجحآدضدجئزد؃جكدحدؠدئدټدقدض؃قددجندججآدضحڪدزدآ؃كدحجؠدئجټدسحڝدقدس؃ندجدآدضحڪدزد؃دكدحدؠدئدټحسئڝدقدددح؃ئزآدضدڪدڪ؃زس؃ضز؃دزكزجنآسسقآحقجدجن؃جقآئج؃ڪسزضڝټقندڝنسجؠز؃ڝدقدددد؃نسجضن؃ئزآزسنڝسكقڝحؠجئجټ؃سقڝئجآنقجدآدضدض؃ڪدزضڝنك؃دڝؠئټقسدڝدقدددآڝجدآحضدڪدزد؃دكدئدؠدئدټحسدڝحقددئندئدآدضدڪحزد؃جكدحدؠدئدټدسدڝحقدددندجدآدزدڪدزد؃حكدححؠدئئټدزدڝدقددحندجحآدضدڪدزد؃دكدحدؠدئحټدسدڝدقدددندجدآحضجڪدزد؃دد؃حقؠدئدټدټ؃سدڝضزند؃كڝجئڝنڝسزد؃دكدك؃حسؠضح؃آزئزڪنزسدقزحججآجض؃ڪقزئڪجقحدضننئسټئڝضقدددندجددئضدڪحزد؃دكدحدؠدسدضڝسدڝحقددحندجحآدسدنسزد؃حكدحجؠدئدټدسدئ؃قدددندجحآدضدڪدزد؃دكدحدؠحئجټدسدڝدټسدقندجدآدآ؃ضدڪضسن؃؃قڝحئټضټنسدڝدقدقض؃سكححڪكئئكټسسئڝآحضؠدئدټدسدئئقددحندجدآدضدڪدكدقڝكدححؠدئحټدسحڝدكدټسندجحآدضجڪدزد؃دكدز؃ؠدئدټدسحڝدقدددندجدآدضدڪحزج؃دكدحدضنئڝټدسدڝدټضزح؃جضد؃جؠحئئټآسق؃جك؃حسنڝجضسح؃حقدددندزئحكؠحئڝټقسسڪضقكدسنڪجسؠ؃سدڝضزند؃كڝآزضدڪدزد؃دآنحدؠحئدټدسدڝدقدجدندجدآحضدڪحزد؃جكدججؠدئدټئسدڝحقدددندجدآدضدڪضزد؃دكدحدؠدئدټدسدڝحقددضندجحآدضدڪدزد؃دكدححؠدئدټدسدڝدقدددندجئآدضدڪدزح؃ضكدحدؠدنقجحآڪضسقحدڝندجدآدؠكض؃ڪ؃سآڝڪقسحضنحجڪآسسضڪكق؃؃ضټنآقضدڪدزدس؃ڝ؃قندڝنضجسټكڝنقدددندئجئآضدڪجزد؃جكدحدؠدضجضآسدڝئقددحندجدآدسجزضزد؃ضكدحئؠدئدټدسزحآقددسندجدآدضحڪدزج؃دكدؠټؠدئدټدسدڝدقدددندڝټآدضدڪدزد؃دكدحدؠدڝدټدسجڝدقسددنججدآدزؠڪدزد؃دكجحدؠدئدټدؠ؃ڝدقدددنحجدآدضدڪحزد؃دكدحجؠنئدټدسددآقنددندجد؃ؠآسئڪڪدضد؃؃كقدسؠجددسكڝدقددددضن؃جئآضضجټنسڝڝق؃كآسئدټدسدجؠڝسزڪددزكححؠئئآكدئج؃نكددحؠئئئؠضس؃ڪقزق؃ټكسدسضسڪدزد؃دڝزقټدحنقئئسضڝدقدددندجدآدزټحدضكدزكدحدؠدكئئدآسضسڪضضك؃حكئحآزدحجڪنزدڝحكئحئكضئ؃آقضقڪټزسقآجدآدضدڪدزد؃دټنسدضنئآټدسدڝدڪئزك؃سكئحآؠئئحټټسټڝسكجقئئنټدسدڝدټقزح؃ټكآدئآدئسټسسضؠآحدؠدئدڪجڪآڝدقجددنكجدآدضدڪدزآ؃دكجحدؠحئدټجسدڝزدنددنججدآسضدڪحزد؃حكدحضسټئدټدسدڝسقددحندجضزټضدڪدزد؃ؠكدححؠدئدحئسدڝجقدددندجدآدضد؃ؠزد؃ئكدحدؠدئدټدسددؠقددضندجحآدضدڪدزدحككدحجؠدئضټدسدڝدقدج؃ندججآدضدڪدزد؃دكدزئؠدئجټدسحڝدقدددآدؠڝآدضجڪدزج؃دكضحدټدآڝټدسجڝدقجددنئجدآزڪنڪدزج؃دندحدؠحئدټحسدڝضجټددندجدټدضدڪحزد؃ضئټحدؠدئدڪقسدڝحقدحجحآجدآجضدڪجزد؃دكدحدټؠئدټئسدڝحقدددندجد؃ئضدڪجزد؃جكدحجؠدسزڝڪسدڝجقدحقندجحآدضحڪدزضؠټكدحدؠدضقټدسحڝدكجنضندججآدضقڪدزد؃دكدقسؠدئجټدسجڝدقدددندقئآدضجڪدزح؃دكدحدټدآڝټدسجڝدقجددنضجدڪدټڝڪدزج؃دكجحدؠزئدټزڝنڝدقجددؠڪجدآحضدڪحزد؃ضئټحدؠدئدڪڪسدڝحقددضضټجدآدضد؃سزد؃حكدجججآئدټجسدڝجقدددندجدڪؠضدڪئزد؃حكدحدؠدئددئسدڝجقددجندججآدززضټزد؃جكدئئؠدئحټدسنڝدقضآټندجدآدزئڪدزح؃دكضټټؠدئدټدقسڝدقحددؠجآضآدضجڪدزس؃دكدحدؠدنسټدسجڝدقجددندجدآدنئڪدزج؃دكدحدؠدئدټدؠؠڝدقئددندجدآدضدڪدزد؃دكضحدؠحئدټدسدڝدقدددنججدآضضدڪدزد؃دكدحدؠجئدټدسدڝدقدددندجدآدضدڪحزد؃دكدحدؠدئدټدسحڝحقدددنددكآنضدڪدزدضضڝسقحدڪقئجكآسضئڪآدئندجدآدضدجئزد؃حكدحدؠدئدټدزدؠسقددحندجحآدضدڪدزدض؃كدحدؠدئحټدسدڝدقدددندجدآحضقڪدزد؃دڝؠحآؠدئدټدنټس؃ڪئزح؃ټقدحټؠحضنټسزجزكحنؠدئدټدنؠسسڪڪقدڝدن؃جقؠسضجآس؃قكدحدؠدكدجټآحسنڪسقجدئكؠآنضدڪدزدئئڝكقححجنحجئټضضسڝجحنندجدآدضدڪدزدئنټدآنؠضئدټدسدضقڪحزڪ؃سآضآكضدڪدزدئك؃سقڪدحنڝئ؃آنضضقنددندجدآزڪنڪدزد؃دككحدؠحئدټحسدڝضجټددندجدآكضدڪحزددجدآحدؠحئدټزسدڝدقدجدڝججدآحضدڪحزد؃ئكدئدؠدئدټحسدڝحقددحندضدآدضدڪحزد؃حكدحضؠدسدټدسدڝحقددحندجقآدقدڪدزد؃حكدحجؠدئسټدسدئ؃قدددندجحآدضدڪدزد؃دكدحدؠحئجټدسدڝدڪؠدقندجدآدآ؃ضدڪضسن؃؃قڝحئحكټسسدڝدقدزڝ؃حكڪحسآئڪضزد؃دكدحد؃ئئدټحسدڝدقدددندضدئڝضدڪحزد؃حكدححؠدضدكسسدڝحقددجندجدآدضدج؃زد؃دكدححؠدئدټدسدڝدقدددنحججآدضدڪدؠد؃ؠكدحدؠدنجئ؃ټكضسڝئضئد؃كټج؃آج؃آزق؃دكدحدح؃ؠدئضآنس؃ڪڝقئنضجدآدضدڪدآئ؃دكححدؠدئدټدسددد؃ڝددنحجدآحضدڪجزدددضسحدؠحئدټحسدڝدقدددڝ؃جدآدضدڪحزد؃دكدحدؠدئدټدسحڝزقدددندؠ؃آؠضدڪدزدئقڝسكض؃ئنسئجټزضنڪئزسجضجضآدضدڪدټقسحڝڪقسڝدضحټدسدڝدټضزن؃ڪكس؃ئؠكئحټڝسقڝسكج؃ضؠ؃جقآقضټڪسنضنكجدآدضدحټټنسقڝككضدننڝجقندڝسقدددندكزحټؠحئقڪئكضكنحدؠدئددئآټس؃ڪئزآڝضكنحڪؠسڪآزد؃دكدحد؃ئئدټحسدڝدقدددندضدئڝضدڪحزد؃حكدحسؠدسدضڝسدڝحقددحندجئآدضز؃نزد؃حكدحؠؠدئحټدسدڝدقضآټندجدآدضؠڪدزح؃دنجنآؠدئحټدسجڝدقدددآدك؃آدضحڪدزح؃دكححدآجټضټدسئڝدقضددندجدآد؃دڪدزح؃دكئحدؠجئدڪدحسڝدقحددنزجدآدضدڪدآ؃؃دكدحدؠحئدټدسدڝدقدددندجحآجضدڪدزدننكقحدؠدئدئ؃ټدسضڪنق؃؃ڝنئحؠضسڪدزد؃دڝجك؃حكنسئئسضڝدقدددندقئآدضحڪدزد؃دكدحدټدآڝټدسحڝدقحددنحجدټددسڪدزح؃دكجحدؠدئدټدؠ؃ڝدقدددنحجدآدضدڪدزد؃دكدححؠجئدټدسدقضك؃ددندجدحكؠسئحټټزضڝكسجدحؠجئئنئس؃ڪټق؃دجآضآقضدڪدزدز؃؃دكضدنؠ؃جڝټئڝضقدددندجددئضدڪحزد؃دكدحدؠدسدضڝسدڝحقددحندججآدسدنسزد؃حكدححؠدئدټدسدئ؃قدددندجحآدضدڪدزد؃دكدحدؠحئجټدسدڝدكزدقندجدآدآ؃ضدڪضسن؃؃قڝحئكسڪحسدڝدقدزئ؃ككححڪآئج؃ڪسزضڝټقندڝنسدئټ؃ضټڝ؃قجنضجدآدضدڪدآئ؃دكححدؠدئدټدسددد؃ڝددنحجدآحضدڪحزدددضسحدؠحئدټجسدڝدقدددڝ؃جدآدضدڪحزد؃دكدحدؠدئدټدسحڝجقدددند؃ئآقضدڪدزدزض؃جقحدئنسئجټئنڝققددندجدج؃آدضضټنز؃ڝڝكئؠضئدټدسدڝدټئددنحجدآدضدڪدزدحددڝحدؠحئدټحسدڝجقدحدسسجدآحضدڪحزد؃دكدحد؃؃ئدټدسدڝحقدددندجدآدضدڪدزح؃جكدحدؠدكسڪحسدڝدقدضئ؃ككححڝؠقئسآضسكڝسقڪدسك؃ئدټضضنڝ؃زڝئنئسآدضدڪدآضسحڝجئد؃ضؠ؃جقآقضټڪسجدڪجكححئؠآئقڪجز؃؃سقڝدضئزټدسدڝدقدئنندجحآدضدڪدزد؃دؠدحدؠدئحټدسحڝدقحددؠججدآدضئڪدزج؃دكدحدؠدئدټدسضڝدقدددندجدآدضدڪدزح؃دكضحدؠحئدټدسدڝدقدددنحجدآدضدڪدزد؃دكدححؠجئدټدسدقضققددندجدحجآ؃ضكؠزسنڝټقټضنئقټدسدڝدڝ؃قددضكنج؃ؠڝضئزض؃دكدحدؠدكئټدسحڝدقدددندجدڪدټڝڪدزح؃دكححدؠجئدڪدحسڝدقحددنحجدآدضدڪدآ؃؃دكدحدؠحئدټدسدڝدقدددندجحآجضدڪدزدټئكقحدؠدئدئ؃ټدسضڪنق؃؃ڝنئسنضنڪدزد؃دڝڝقحدڪنسدئټ؃ضټڝ؃قجنضجدآدضدڪدآئ؃دكححدؠدئدټدسددد؃ڝددنحجدآحضدڪحزدددضسحدؠحئدټجسدڝدقدددڝ؃جدآدضدڪحزد؃دكدحدؠدئدټدسحڝجقدددندجحټ؃ضدڪدزدسكڝسقحدټؠضجكؠضضسڝكقضڪئن؃حټآ؃ضجكآ؃قكدحدؠدؠ؃ئدټضضنڝ؃زڝدئجضآدضدڪدزدضئكدححؠدئدټدسدڝدندكڝندجحآدضحڪدزج؃دندڪسؠدئحټدسحڝدقدددندق؃آدضدڪدزح؃دكدحدؠدئدټدسدڝحقجددندجدئ؃سئڪدزد؃د؃؃كسحضك؃جزؠزضنڪسققڪحنجججآ؃ضقڪئضئڝنكؠدسئحټقسدڝدقدق؃ددنضحنآ؃ئڝڪئ؃ضكدحدؠدئدحئسدڝحقدددندجدآدزدسڝزد؃حكدححؠدئجټدزدؠسقددحندجحآدضدڪدزدض؃كدحدؠدئحټدسدڝدقدددندجدآحضجڪدزد؃دؠآحقؠدئدټدټ؃سدڝضزند؃كڝجئسزڪؠزد؃دكدقكدسنحجټټضضكټضزسدكنضآضضدڪدزد؃دڪئحدؠحئدټدسدڝدقدجدحڝجدآحضدڪحزد؃حكدجدزسئدټحسدڝجقدددندجدد؃ضدڪدزد؃حكدحدؠدئدټدسدڝدقحدجندجدآدزآڝحزد؃دكدسئدكنحجڝآقضسټضزك؃سكڪحسن؃ضدڪضسن؃؃قڝټآئزټدسدڝدآحزئ؃ئكسحڝآضڪززد؃دكدحدڪنئدټحسدڝدقدددندضدآدضدڪحزد؃حكدححؠدضجټدسدڝئقددجندجدآدضدڪدزد؃ضكدحدؠدئدټدسدڝدقددحندجضآدضحڪدزد؃دكدحدؠدئحټدسدڝدقدددندجدآحضجڪدزد؃دسئحكؠدئدټدآزس؃ڪڝقضڝئكنجؠؠسڪحزق؃دكدحدح؃ؠدئضآنس؃ڪڝقئنضجدآدضدڪدآئ؃دكححدؠدئدټدسددد؃ڝددنحجدآحضدڪجزدددضسحدؠحئدټحسدڝدقدددڝ؃جدآدضدڪحزد؃دكدحدؠدئدټدسدڝحقدددندؠ؃آزضدڪدزدضسڝڝقټح؃نحجضسقڝدقدددندئؠآدضدڪدزد؃دكدحدټدئدټدسدڝدقدددنحجدآدضدڪدزد؃دكجحدؠحئدټدسدڝدقدددنحجدآدضد؃دزد؃دكدحدؠدئدټحسدڝدقدددندجدآجضدڪحزد؃دكدحدؠدئدټحسدڝدقدددندجدآدضحڪحزد؃دكدجزؠؠئدټدسدجحڪټزندزكس؃ئؠكئسټئسآكئحدؠدئدټدؠئڝدقحددندجدآدضدڝدجس؃دكححدؠحئدټدسدڝدټ؃ددندجدآحضدڪدزد؃دكدحدؠدئحټجسدڝدقدآڝنقجدآدضدض؃ڪدزضڝنك؃دڝؠئض؃سټڝدقددددضنجححؠئئسڪجض؃؃جقندقننجڝسضڝدقدددندقئآدضحڪدزد؃دكدحدټدآڝټدسحڝدقحددنحجدټددسڪدزح؃دكجحدؠدئدټدؠ؃ڝدقدددنحجدآدضدڪدزد؃دكدححؠجئدټدسدكنقڪددندجدد؃ؠجئؠټسسئ؃ضئدڝجؠ؃ئجآضضسڝجؠنؠحجدآدضدحئټكسحڝڝققدسكضجكآسضڪڪسس؃ددنضحنآ؃ئڝزز؃دكدحدؠدزنټدسحڝدقدددندجدڪدضدڪدزح؃دكححدؠجئدڪجسدڝدقئددنحجدآدضدڪدزد؃دكضحدؠدئدټدسدڝدقدددنحجدآضضدڪحزد؃دكدحدؠدئدټحسدڝدقدددندجدآدضدڪقزد؃دكدؠضؠقئدټدسدئجڪسززدجكسجئؠككڝزن؃دكدحدڝقنسئضؠضضكڪسزڪ؃سنئزڝضدڪدزد؃دټدحسؠدئدټدآزضټڪحزقدئضآټ؃ضدڪدزدضئڝحكزدسقئئسټئسضڝ؃زڪڝضككحسؠڪئسؠد؃ئكدحدؠدكئجسټضجدقټددندجد؃ئآسضئڪضز؃ڝڪئد؃ضنكجسآڪضسكؠددندجدآدؠدڪدزد؃دكدحدؠدئدڝدسدڝدقدددندجدآسضدڪدزد؃دكجحدؠدئدټدسدددقدددنججدآجضدڪضزدحدكدحدؠجئدټجسدڝققدددندجدآدضدڪجزد؃جكدحزؠدئدټدسدڝنقددحندجحآدضضكټزد؃دكدحنؠدئحټدسضنټقدددندئنآدضحڪدزدضئكدحدؠدئحټدسدڝدندحدندجدآدضدڪدزح؃دكدحدؠدئجټدسدڝدقدددآدجدآدضجڪدزج؃دكجحدؠدئدټدسجڝدقئددندجدآدضدڪدزد؃دكدحدؠحئدټدسدڝدقدددنحجدآدضد؃دزد؃دكدحدؠدئدټزسدڝدقدددنججدآدضدڪدزدحدكدحدؠجئدټجسدڝضقدجدندجدآجضدڪجزد؃قكدحدؠدئدټدسدڝجقددحندجدآدضدڪدزد؃جكدحدؠدسدټدسدڝدقدددندجزآدسجڪدزد؃جكدحئؠدئدټدسدڝدقدددندججآدضحڪدزدض؃كدحدؠدئحټدسدڝدقدددندجدآحضحڪدزد؃دټدحڝؠدئدټدنزئ؃ټزضئ؃ننجحئؠټئسؠئز؃ڝټك؃حجئئټدسدڝدقدسئندجحآدضدڪدزد؃دندڪسؠدئحټدسحڝدقدددندق؃آدضدڪدزح؃دكدحدؠدئدټدسدڝحقجددندجددسضڝڪدزد؃دڝئقكدحنڪئئنزضنڪټزټڪئن؃حټآ؃ضج؃ض؃قكدحدؠدؠ؃ئدټضضنڝ؃زڝدئجضآدضدڪدزدضئكدححؠدئدټدسدڝدندكڝندجحآدضحڪدزج؃دندڪسؠدئحټدسحڝدقدددندق؃آدضدڪدزح؃دكدحدؠدئدټدسدڝحقضددندجدئ؃ضضڪدزد؃دڝڝقسحكؠضزنسئڝدقدددڝئكسجضڝنڪسزد؃دكدكضدكنسجڪآسټكقكددندجددئؠسضضآضسكڝسقڪدسضجټدسدڝدقزجنندجدآدسحڪدزح؃دكدحدؠضڝټټدسدڝدكحددنحجدآدنئڪدزح؃دكدحدؠدئدڝد؃جڝدقحددنحجدآضضدڪدزد؃دكئحدؠدئدټدسدڝدقدددنحجدآئضدڪحزددجكدحدؠحئدټحسدڝدقدددندجدآجضدڪحزد؃دكدحدؠدئدټئسدڝئقدددندجضآدضدڪدزدد؃كدححؠدسدج؃سدڝزقددسندججآدضدجئزد؃ككدحدؠدئدټدقدزڝقددكندجكآدضئڪدزدقجكدحكؠدئكټدسضڝدقدضسندجزآدضكڪدزح؃دكزنزؠدئحټدسؠڝدقحددنججدآض؃ټڪدزد؃دكؠحدؠحئدټدؠ؃ڝدقدددنحجدآدضدڪدزد؃دكدححؠجئدټدسدڝحقڪددندجددقؠنئڝټضز؃؃قئدڝجؠ؃ئجآضضسڝجؠنؠحجدآدضدحئټكسحڝڝققدسكضجكآسضڪڪسس؃ددنضحنآ؃ئڝزز؃دكدحدؠدزنټدسحڝدقدددندجدڪدضدڪدزح؃دكححدؠجئدڪجسدڝدقئددنحجدآدضدڪدزد؃دكضحدؠدئدټدسدڝدقدددنحجدآضضدڪحزد؃دكدحدؠدئدټحسدڝدقدددندجدآدضحڪجزد؃دكدححآحئدټدسدجئڪكزح؃ڝكقحسنضئكټسسڪڝسز؃حدؠضجنټ؃ضڝدضحؠندجدآدكضضجڪ؃زدڝضك؃حقنڝڝدؠ؃سدڝضزند؃كڝڪدكجئحټئسآڝقكجح؃ؠسجڝآضڝزقدددندجدڝنضدڪحزد؃دكدحدؠدسدټدسدڝحقددحندجحآدسجڪدزد؃ئكدحجؠدئدټدسدڝدقددضندجدآدضدڪدزد؃دكدححؠدئضټدسحڝدقدددندجدآدضحڪدزد؃دكدحدؠدئدټجسجڝدقدددؠنجدآدضدڪدزد؃دكدحدڝدئسټدسدڝدڝدزئ؃حكټحټسټڪدزد؃دنجؠضؠدئجټدسحڝدقدددؠجآضآدضئڪدزح؃دكدحدآجآآټدسضڝدقجددندجدآزقآڪدزس؃دكدحدؠحئدټضسدڝددټددندجدآجضدڪدزد؃دحټحدؠدئدټدسدڝدقدددجټجدآدضدڪئزد؃دكدحدئټئدټدسدڝحقدددندجدق؃ضدڪضزد؃جكدححؠدئزكنسدڝدقدحكندجحآدضحڪدزضؠټكدحدؠدضكټدسحڝدقزټنندجدآدسكڪدزح؃دكححدؠضڝټټدسدڝدككددنحجدآزدنڪدزح؃دنكحدؠحئدټدسدڝضجټددندجدټكضدڪحزد؃دضدحدؠضئدټجسدڝئقدددسدجدآسضدڪئزد؃جكدحززنئدټضسد؃كقددحندجسآدضضكټزد؃دكدجكؠدئحټدسدؠدقددضندججآدضئڪدزدآدكدحسؠدئئټدسجڝدقزټنندجضآدسكڪدزح؃دكسحدؠضڝټټدسدڝدككددنحجدآض؃ټڪدزد؃دننحدؠحئدټدآڝڝدقضددندجدآدضدڪدڪك؃دكضحدؠحئدټدسدڝدڪسددنضجدآجضدڪدزد؃دڪ؃حدؠدئدټحسدڝدقددحندجدآدضدڪدزد؃دكدحقؠدئدټدسدكزقدددندجحآدضدڪدزد؃دكدحدؠدئدټدسدڝدقدددندجدآدضدڪدزد؃دكدحدؠدئدټدسئڝدقدددندجدآدضدڪدزد؃دكدحدؠدئدټدسدڝدقجددندجدآدضدڪدزد؃دكححدؠدئدټدسدڝدقددحنججدآدضدڪحزؠ؃دكدحد؃ضنحججقدججڝ؃قج؃ضكسججكدڝحزد؃دكدسئدكنحجڝآقضسټضزك؃سكڪحسن؃ضدڪضسن؃؃قڝؠزئدټدسدڝدؠنددنحجدآدضدڪدزدحدكدحدؠحئدټحسدڝجقدحجندجدآئضدڪحزد؃دكدحدؠدئدټضسدڝدقدددندجدآدضدڪحزد؃ضكدححؠدئدټدسدڝدقددحندجدآدضدڪدزد؃دكححزؠدئدټدؠسڝكقدددندزټحنؠقئكڪضسنڝڝققآزئؠټدسدڝدآقزسدضقئحسآجضزټنسئڝسزسؠضئدټدسدضقڪحزڪ؃سكؠآڝضدڪدزدئئ؃؃قټح؃ؠجحئآكضنڪزقض؃؃قضج؃آدس؃قد؃دكدحدڝئؠ؃جټټ؃سجټئزك؃نكزجضنضض؃ټقسقڝټقسج؃ئسټدسدڝدڪززټ؃حكقجئضټڪدزد؃دكدزئؠدئحټدسدڝدقدددآدؠڝآدضحڪدزح؃دكزحدټدآڝټدسحڝدقحددنسجدآزڪنڪدزح؃دكزحدؠحئدټحسدڝضجټددندجدآزضدڪحزد؃ضئټحدؠدئدټآسدڝحقدحجحآجدآحضدڪئزد؃دكدئدد؃ئدټحسدڝحقددجندئجضضضدڪئزد؃حكدحدؠدئدقدسدڝحقددئندججآدسدنسزد؃حكدحضؠدئدټدسدئ؃قدددندجحآدضدڪدزد؃دكدحدؠحئكټدسدڝدقحدقندجدآدندئټټحزنڝسكجحئئحټكسدڝدقدضكدسكڪححؠڝض؃ټنسضحضحنؠدئدټدؠقضحڪټزآڝئندحسؠسئضؠد؃ضكدحدؠدنقجحآڪضسكزدسندجدآدؠزئټټحسق؃ئآنآ؃ئدټدسدئئڝدزس؃سكض؃كؠحئئټآضض؃؃ققدقنټجسسحڝنقدددندزئحكؠحضجټحسئ؃ضقسحجڝڝټآسدڝدقدضټد؃كئححؠټجدټټسح؃نقسحجئڪټدسدڝدقدسئندجحآدضدڪدزد؃دؠدنڝؠدئحټدسحڝدقسددآدؠڝآدضحڪدزح؃دكزحدؠزټنټدسحڝدقزددنحجدآحضدڪضحټ؃دكدحدؠزئدټحسدڝضجټددندجدآټضدڪحزددجدآحدؠحئدټضسدڝدقدجدحئجدآحضدڪحزد؃حكدئدؠدئدټحسدڝحقددكندضدآدضدڪحزد؃حكدحقؠدسدټدسدڝحقددحندججآدسدڪدزد؃حكدحئؠدئدټدسدئ؃قدددندجحآدضدڪدزد؃دكدحدؠحئجټدسدڝدسكدقندجدآدآ؃ضدڪضسن؃؃قڝحئټضڪآسدڝدقدق؃دسنضد؃ؠزجزټنسس؃قسححجؠجئ؃ټقسئټ؃قسدضكټحنؠڝئسؠئز؃ڝټك؃حجئضټدسدڝدقدسئندجحآدضدڪدزد؃دؠدنڝؠدئحټدسحڝدقحددؠدڝسآدضحڪدزج؃دكدحدؠدك؃ټدسدڝدقحددندجدآدضدڪدزد؃دكححدؠدئدجؠسڝڝدقدددڪككحجئكنئڝټنزضڝنقحدټننئؠآسضضقكددندجدټجټآڪدزد؃دكححدؠدئدټزڝنڝدقدددنسجدآحضدڪحزد؃ضئټحدؠدئدټسسدڝحقدددڝئجدآدضدڪدزد؃دكدحددؠئدټدسدڝحقددحندجدجكضدڪدزد؃حكدحدؠدضجټدسدڝدقددحندجدآدضدج؃زد؃دكدححؠدئدټدسدڝدقدددنحججآدضدڪدحڝ؃قكدحدؠدؠ؃ئدټضضنڝ؃زڝدئدكآآضدڪدزدزض؃جقحدئنسئجنئس؃ڪټق؃دججضآدضدڪدزدضئكدححؠدئدټدسدڝدندكڝندجحآدضحڪدزح؃دندڪسؠدئحټدسجڝدقدددندق؃آدضدڪدزح؃دكدحدؠدئدټدسدڝحقحددندجدڪآضئڪدزد؃دټآقسحنئئټدسدڝدقدسئندجحآدضدڪدزد؃دندڪسؠدئحټدسحڝدقدددندق؃آدضدڪدزح؃دكدحدؠدئدټدسدڝحقجددندجدسنضقڪدزد؃دڝسقڝدحنججټآسضض؃؃دقندجدآدآ؃ضدڪضسن؃؃قڝحئئضټدسدڝدقدسئندجحآدضدڪدزد؃دؠدنڝؠدئحټدسحڝدقجددؠدڝسآدضحڪدزح؃دكدحدؠدك؃ټدسدڝدقحددندجدآدضدڪدزد؃حكجحدؠدئدسضسقڝدقدددد؃ندجضؠنض؃ټڝزئد؃حڪؠدئدټدآټضنڪڪزندضزضحنآئضضټحسڝڝئقسؠضئدټدسدڝدټئددنحجدآدضدڪدزدحددڝحدؠحئدټحسدڝحقدحدسسجدآحضدڪجزد؃دكدحد؃؃ئدټدسدڝحقدددندجدآدضدڪدزح؃جكدحدؠدآ؃ټڪسدڝدقدزض؃ننئجضؠحئڝټئسسټئك؃دټؠ؃ئججئڝققدددندن؃جدآضئنڪ؃سڝ؃ئحضؠدئدټدسدئئقددحندجدآدضدڪدكدقڝكدححؠدئحټدسجڝدكدټسندجحآدضحڪدزد؃دكدز؃ؠدئدټدسحڝدقدددندجدآدضدڪحزج؃دكدحدككئقټدسدڝدڝ؃قددضكنج؃ؠڝضئئئ؃ټكدحدؠدنجئ؃ټكجزڪنزټ؃ټزئج؃ؠټض؃ڪج؃ضكدحدؠدئدحئسدڝحقدددندجدآدزدسڝزد؃حكدححؠدئحټدزدؠسقددحندججآدضدڪدزدض؃كدحدؠدئحټدسدڝدقدددندجدآحضزڪدزد؃دكححكؠدئدټدنټضنڪقزكدضكنحڝؠقڝزقح؃دكدحدڝئؠ؃جټټ؃سجټئزك؃نكزجضؠ؃حجڪ؃زض؃ضك؃دڪنؠټسسدڝدقدزز؃ټكححقآئجسزؠ؃دكدحدڝقنسئضؠئضسڝجقز؃نكئحسڪضڪضزد؃دكدققدحنڪجسؠس؃دقدددندزئج؃ؠټض؃ڪجضئڝكقندزؠضحضټ؃ضقڪقزټ؃سجټآدضدڪدزدضئكدححؠدئدټدسدڝدندكڝندجحآدضحڪدزئ؃دؠدنڝؠدئحټدسحڝدقزددنزآنآدضحڪدزز؃دكححدؠحئدټضدټڝدقدددنزجدآحضدڪضحټ؃دكدحدؠآئدټحسد؃ج؃آددنحجدآسضدڪدزدحدڝ؃حدؠحئدټحسدڝضقدحججضجدآئضدڪحزد؃دكدحدسدئدټحسدڝئقددجندئدقسضدڪحزد؃جكدحدؠدئدح؃سدڝدقددحندجدآدضدڪدزد؃دكححقؠدئدټدؠسڝآقدددندزئجسآئضضڪ؃سڪڪدقححجؠضئئ؃نڝئقدددندكڝحسآقآكزض؃دكدحد؃دنحئجټضنڝقنددندجدجقآ؃ضجټآزئ؃دقحدئنسزنسقڝدقدددڪسكڝححؠجئټټسسضجنحقؠدئدټدؠدضټڪحقن؃سنججئزآڪكزد؃دكدسندڝؠئئضآحضڝڪئزسنڝجدآدضدڪدڪس؃دكححدؠدئدټدسد؃دقدددنحجدآسضدڪدزد؃دكدحدؠحئدټدسدڝدقدحدندجدآحضدڪززد؃دكدحدؠدئدټحسدڝدقدددندجدآدضدڪجزد؃دكدحدؠدضجټدسدڝئقددقندجدآدزدڪدزد؃ئكدحئؠدئجټدزجڝدقددضندجئآدضدڪدقج؃دكدحسؠدئضټدسدڝدقدددندجئآدضسڪدزد؃دكدحدؠدئجټدسدڝدقحددؠدڝسآدضحڪدزح؃دكجحدؠدك؃ټدسدڝدقحددندجدآدضدڪدزد؃دكححدؠدئدحسسڝڝدقدددڪككحجئكنئڝټنزضڝنقحدټننئؠآسضضقكددندجدټجټآڪدزد؃دكححدؠدئدټزڝنڝدقدددنسجدآحضدڪحزد؃ضئټحدؠدئدټسسدڝحقدددڝئجدآدضدڪدزد؃دكدحددؠئدټدسدڝحقددحندجدجكضدڪدزد؃حكدحدؠدضجټدسدڝدقددحندجدآدضدج؃زد؃دكدححؠدئدټدسدڝدقدددنحجحآدضدڪدزح؃نكدحدؠدكئجڪټ؃س؃ڝضزك؃نكڝحقضئڪدزد؃دكدزئؠدئحټدسدڝدقدددؠدڝسآدضحڪدزح؃دكدحدؠدك؃ټدسدڝدقحددندجدآدضدڪدزد؃حكزحدؠدئدڝآسضڝدقددد؃قكححڪؠسزضزڪ؃دكدحدڝحنڪججآنضسڪڝقضڝضن؃حقؠقئټټس؃حكسحدؠدئدجزآټضحڪققئقكجڝآدضدڪدآ؃زس؃ضقضح؃ؠ؃ئجنحضڪڪجزن؃سكڝجضكدڪؠزد؃دكدسقدسؠضحئآسسجڝززن؃ئكسزڝضكڪدزد؃دټټقندقنكئضآنضڝڪقدټندجدآدضدجئزد؃حكدحدؠدئدټدقدزڝقددحندجحآدضئڪدكدقڝكدححؠدئحټدسجڝدقزننندجحآدضزڪدزح؃دكححدؠضڝټټدسدڝدقزددنحجدآض؃ټڪدزد؃دكآحدؠحئدڪجڪآڝدقحددنحجدآدضد؃دټ؃؃دكححدؠحئدټسسد؃جدضددنئجدآزضدڪدزد؃دئدحدؠحئدټئسدڝجقدحدسسجدآحضدڪضزد؃دكدحد؃؃ئدټدسدڝحقدددندجدآدضدڪدزح؃حكدحدؠدنؠټئسدڝدقدضزڝ؃قزآئضدڪدزد؃دڪئحدؠحئدټدسدڝدقدحدسسجدآحضدڪحزد؃دكدحد؃؃ئدټدسدڝحقدددندجدآدضدڪدزئ؃ككدحدؠدضزټزسدڝدقدقئدضنجحنؠڝئقؠئ؃دكدحدؠدئدټدټدجدټسددندجدآدحزڪدزد؃دكدحدؠدجدد؃ڪ؃ڝضقدددندكججنآضئسحڝ؃ضكدحدؠدنئجكآحسجڪؠدټندجدآدكئضكټټئس؃نزقڝجكضحزنقضڪآقڪئنئجدآدضدضئڪسسجؠححدؠدئدڪجڪآڝدقئددنقجدآدضدڪدڝج؃دكئحدؠئئدټحسدڝزننددنئجدآقضدڪحزد؃دكدحضسټئدټدسدڝققددحندئجئآضدڪئزد؃قكدحدؠدئدضجسدڝئقددئندجحآدضدئسزد؃ئكدحجؠدئدټدزجقضقددئندجضآدضدڪدقجكڝكدحضؠدئئټدسدڝدكجددندجسآدضضڪدزد؃دكدحدؠدئزټدسدڝدقدددؠججدآدضقڪدزض؃دكدحدؠضئدټدسسڝدكڪددنحجدآدزؠڪدزن؃دكضحدؠدئدڪج؃ؠڝدقؠددنحجدآدضد؃دزد؃دكؠحدؠؠئدټزسدددقدددنآجدآدضدڪكزد؃دكدحدؠڪئدټكسدڝدقدددندجدآڝضدڪكزد؃دكدحدؠدئدټآسدڝڝقددجندضدآدضدڪآزد؃آكدحسؠدئدټدسدڝآقددجندججآدضدڪدزد؃آكدحآؠدئئټدقدڝدقددآندجآآدضجڪدزد؃دكدحؠؠدئجټدسجڝدقدددندجضآدضنڪدزؠ؃دكدحدؠدئنټدسئڝدقجددآدجدآدضئڪدزن؃دكجحدؠضضڪټدسسڝدقڪددنحجدټجټآڪدزس؃دكقحدؠدئدټد؃قڝدقسددنحجدآضضدڪدټس؃دكضحدؠجئدټدسدڝدټ؃ددندجدآحضدڪدزد؃دكدحدؠدئحټزسدڝدقدڝكنضجدآدضدئقټحسڪڝسؠضؠقئدټدسدجحڪڪزج؃نكسحڝآضس؃زس؃دكدحددزنټجحآقسئنآدكندجدآدكټئنټقسك؃ضقندڝنقؠكسؠڝدقدددڪقكسجضنئئسڪجززڝنقئدسنؠټڪسدڝدقدضح؃ڪكجحنؠسئڝڪضضض؃؃ققدقنټجسسآڝدقدددندقئآدضحڪدزد؃دكدحدټدآڝټدسحڝدقحددنئجدڪدټڝڪدزح؃دكححدؠزئدټزقنڝدقحددنؠجدآحضدڪدزد؃ضئټحدؠدئدټؠسدڝحقدحجحآجدآحضدڪحزد؃دكدئدد؃ئدټحسدڝحقددسندئجضضضدڪئزد؃ضكدحدؠدئدقدسدڝحقددئندججآدسدنسزد؃حكدحجؠدئدټدسدئ؃قدددندجحآدضدڪدزد؃دكدحد");local N=(0x2060/74)local o=111 local l=d;local e={}e={[(-#"While true"+(-34+0x2d))]=function()local n,i,d,e=A(z,l,l+p);l=l+m;o=(o+(N*m))%r;return(((e+o-(N)+a*(m*g))%a)*((g*W)^g))+(((d+o-(N*g)+a*(g^p))%r)*(a*r))+(((i+o-(N*p)+W)%r)*a)+((n+o-(N*m)+W)%r);end,[(-#'turi ip ip ip'+(69+(-#'Rip Technoblade but he truly never dies in our hearts'+(76+-0x4d))))]=function(e,e,e)local e=A(z,l,l);l=l+M;o=(o+(N))%r;return((e+o-(N)+W)%a);end,[(-#'Oh hes too mainstream'+((0x12df+-127)/0xc4))]=function()local d,e=A(z,l,l+g);o=(o+(N*g))%r;l=l+g;return(((e+o-(N)+a*(g*m))%a)*r)+((d+o-(N*g)+r*(g^p))%a);end,[(0x164/89)]=function(o,e,l)if l then local e=(o/g^(e-d))%g^((l-M)-(e-d)+M);return e-e%d;else local e=g^(e-M);return(o%(e+e)>=e)and d or y;end;end,[(123+-0x76)]=function()local o=e[(-#[[go kys go kys go kys]]+(109-0x58))]();local n=e[(0x2e-45)]();local i=d;local l=(e[((0x72-88)+-#'nononono listen listen')](n,M,j+m)*(g^(j*g)))+o;local o=e[((109-0x65)+-#'nerd')](n,21,31);local e=((-d)^e[(((-#'mike litoris'+(771308/0x97))/0xb6)+-#[[moonsec got deobfuscated]])](n,32));if(o==y)then if(l==v)then return e*y;else o=M;i=v;end;elseif(o==(a*(g^p))-M)then return(l==y)and(e*(M/v))or(e*(y/v));end;return G(e,o-((r*(m))-d))*(i+(l/(g^Y)));end,[(0x24-(3930/0x83))]=function(n,i,i)local i;if(not n)then n=e[(-0x5d+94)]();if(n==y)then return'';end;end;i=H(z,l,l+n-d);l=l+n;local e=''for l=M,#i do e=R(e,F((A(H(i,l,l))+o)%r))o=(o+N)%a end return e;end}local function y(...)return{...},T('#',...)end local function z()local n={};local i={};local o={};local c={n,i,nil,o};local l={}local h=(187-0x86)local o={[(65-((0x391c/172)+-#'impulse was here omg'))]=(function(o)return not(#o==e[(0x1d0/232)]())end),[(0x42-62)]=(function(o)return e[(-#"whats up"+(0x38-43))]()end),[(0x7e-(0xbe+-65))]=(function(o)return e[(-0x22+40)]()end),[(0xb4/90)]=(function(o)local l=e[(-#"free bobux no skem"+(696/0x1d))]()local o=''local e=1 for d=1,#l do e=(e+h)%r o=R(o,F((A(l:sub(d,d))+e)%a))end return o end)};c[3]=e[(0x68-102)]();local a=e[(63+-0x3e)]()for d=1,a do local e=e[(0x4/2)]();local a;local e=o[e%(80-0x3b)];l[d]=e and e({});end;for c=1,e[(211/(-#"how tf do i remove the meme strings"+(-0x71+359)))]()do local o=e[(105+-0x67)]();if(e[(-#'ballz'+(80-0x47))](o,d,M)==v)then local r=e[(-#'hol on leme chec ur seirc histori toll'+(1470/0x23))](o,g,p);local a=e[(-#'jjsplot on top'+(0x1c2/25))](o,m,g+m);local o={e[(116-0x71)](),e[(54-0x33)](),nil,nil};local i={[(0x57-87)]=function()o[f]=e[(33-0x1e)]();o[D]=e[(38-0x23)]();end,[(-#[[fico éreto para mulheres japonesas]]+(7070/0xca))]=function()o[s]=e[(91+-0x5a)]();end,[((0x759/209)+-#'niggers')]=function()o[x]=e[(123-0x7a)]()-(g^j)end,[(((-0x49+246)-0x8e)+-#'With rock shock rap with Doc')]=function()o[s]=e[(37-0x24)]()-(g^j)o[P]=e[(456/0x98)]();end};i[r]();if(e[(-#"roblox roblox zimjelja roblox roblox sastalajala roblox roblox roblox salamelja roblox"+(0x75+-27))](a,M,d)==M)then o[t]=l[o[b]]end if(e[(0x18+(-0x6b+87))](a,g,g)==d)then o[O]=l[o[s]]end if(e[((0x313f8/205)/0xf6)](a,p,p)==M)then o[D]=l[o[B]]end n[c]=o;end end;for e=M,e[(18-0x11)]()do i[e-M]=z();end;return c;end;local function v(e,N,m)local o=e[g];local a=e[p];local e=e[d];return(function(...)local j=o;local l={};local A={};local F={};local y=y local r=a;local z={...};local W=T('#',...)-M;local a=e;local e=d e*=-1 local p=e;local o=d;for e=0,W do if(e>=r)then F[e-r]=z[e+M];else l[e]=z[e+d];end;end;local e=W-r+d local e;local r;while true do e=a[o];r=e[(33+-0x20)];n=(2324358)while(9373/0x5b)>=r do n-= n n=(3919594)while r<=(193-0x8e)do n-= n n=(3117840)while(-#[[arab porn]]+(170-0x88))>=r do n-= n n=(1243512)while(((-43+0x96)-0x4d)+-#'free bobux no skem')>=r do n-= n n=(5569088)while(53-0x30)>=r do n-= n n=(6801256)while r<=(0x23+(-4224/0x80))do n-= n n=(5656275)while(-#"testpsx dupe no scam legit 2022 free no virus"+(0xbd-144))>=r do n-= n m[e[U]]=l[e[c]];break;end while(n)/((-#"if found dad when back from milk then print yay end"+(-28+0x70c)))==3279 do n=(13009467)while(0x92/146)<r do n-= n for e=e[b],e[s]do l[e]=nil;end;break end while 3841==(n)/((616434/0xb6))do local r;local n;l[e[h]][e[s]]=l[e[B]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[h];r=l[e[U]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[b]]=m[e[s]];o=o+d;e=a[o];l[e[c]]=l[e[x]][e[P]];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];l[e[c]]=e[x];o=o+d;e=a[o];l[e[w]]=e[x];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[u]))break end;break;end break;end while(n)/((-#[[I hate black people]]+((0x15d2a-44731)/13)))==1991 do n=(1884024)while((2100/0x64)+-#[[nico der hurensohn]])>=r do n-= n local r;local n;l[e[w]][e[x]]=l[e[D]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];l[e[i]][e[O]]=l[e[B]];o=o+d;e=a[o];n=e[b];r=l[e[x]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[c]]=e[s];o=o+d;e=a[o];n=e[c]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];n=e[i];r=l[e[U]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[w]][e[u]]=e[C];o=o+d;e=a[o];l[e[b]]=l[e[f]][e[C]];break;end while(n)/((0x4ed+-115))==1644 do n=(14661331)while(0x82-126)<r do n-= n local r;local n;l[e[b]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[c];r=l[e[x]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[c]][e[x]]=e[S];o=o+d;e=a[o];l[e[c]][e[U]]=e[C];break end while 3917==(n)/((-#'Asses'+(3775+-0x1b)))do local r;local n;l[e[h]][e[x]]=l[e[P]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];m[e[O]]=l[e[t]];o=o+d;e=a[o];n=e[h];r=l[e[x]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[c]]=e[x];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[h];r=l[e[f]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[w]][e[u]]=e[B];o=o+d;e=a[o];l[e[w]][e[x]]=e[B];break end;break;end break;end break;end while(n)/(((0x9f790/230)+-0x21))==1984 do n=(1817904)while r<=((3268/0x2b)+-0x44)do n-= n n=(8209850)while((-#'W4rboy was here'+(0xfd-149))-83)>=r do n-= n local r;local n;l[e[c]][e[x]]=l[e[C]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[t]][e[f]]=e[S];o=o+d;e=a[o];l[e[h]][e[s]]=e[B];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[h];r=l[e[x]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[c]][e[s]]=e[C];break;end while 2783==(n)/((-#'nate higger nuck figgers and nill kiggers'+(0x97e3/13)))do n=(6397248)while(-#[[if syn request then print your mom then end and then kill yourself]]+(6497/0x59))<r do n-= n if l[e[t]]then o=o+d;else o=e[U];end;break end while(n)/((0x44b78/151))==3432 do local r;local n;l[e[t]][e[U]]=l[e[D]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[c];r=l[e[O]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[h]]=m[e[u]];o=o+d;e=a[o];l[e[i]]=l[e[U]][e[S]];o=o+d;e=a[o];l[e[c]]=e[O];o=o+d;e=a[o];l[e[w]]=e[f];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[U]))break end;break;end break;end while 726==(n)/((-#[[if syn request then print your mom then end and then kill yourself]]+(-0x3e+2632)))do n=(2916771)while((0x24b4/162)+-48)>=r do n-= n n=(13253380)while r>(-#'Ur mom'+(495/0x21))do n-= n local r=j[e[s]];local n;local d={};n=q({},{__index=function(o,e)local e=d[e];return e[1][e[2]];end,__newindex=function(l,e,o)local e=d[e]e[1][e[2]]=o;end;});for n=1,e[S]do o=o+M;local e=a[o];if e[(89-0x58)]==156 then d[n-1]={l,e[s]};else d[n-1]={N,e[O]};end;A[#A+1]=d;end;l[e[c]]=v(r,n,m);break end while 3836==(n)/((-0x7c+3579))do l[e[c]]=l[e[s]]%e[P];break end;break;end while(n)/((0xcb0-1679))==1859 do n=(1269504)while r>(-#"Fucking Retarted"+(0x16c8/216))do n-= n l[e[i]]=l[e[x]][l[e[S]]];break end while(n)/(((0x82d4/12)+-#"nigglet"))==456 do local e=e[w]l[e]=l[e]()break end;break;end break;end break;end break;end while(n)/((0xc6d-1642))==808 do n=(1435554)while r<=(((310+-0x6f)+-#'real roblox omg builderman caught playing real')-135)do n-= n n=(6467694)while r<=(0xdb6/234)do n-= n n=(5398310)while r<=(-#"impulse was here omg"+(0x1125/(-#"imagine not being able to talk"+(-94+0x101))))do n-= n local r;local n;l[e[w]][e[s]]=l[e[_]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[b];r=l[e[s]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[h]][e[O]]=e[P];o=o+d;e=a[o];l[e[t]][e[u]]=e[B];o=o+d;e=a[o];l[e[b]][e[u]]=e[_];o=o+d;e=a[o];l[e[i]][e[O]]=e[D];o=o+d;e=a[o];l[e[i]][e[f]]=e[P];o=o+d;e=a[o];l[e[c]][e[u]]=e[S];break;end while(n)/((299776/0x80))==2305 do n=(9060745)while r>(826/0x3b)do n-= n local r;local n;l[e[h]][e[x]]=l[e[P]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[i];r=l[e[s]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[b]][e[U]]=e[D];o=o+d;e=a[o];l[e[i]][e[u]]=e[B];o=o+d;e=a[o];l[e[c]][e[u]]=e[B];o=o+d;e=a[o];l[e[b]][e[U]]=e[_];o=o+d;e=a[o];l[e[t]][e[u]]=e[P];break end while(n)/((-118+0xbb7))==3145 do local n;local r;l[e[w]]=N[e[x]];o=o+d;e=a[o];r=e[c];n=l[e[u]];l[r+1]=n;l[r]=n[e[P]];o=o+d;e=a[o];l[e[b]]=N[e[s]];o=o+d;e=a[o];l[e[c]]=l[e[f]][e[S]];o=o+d;e=a[o];l[e[w]]=l[e[s]][e[_]];o=o+d;e=a[o];if l[e[i]]then o=o+d;else o=e[s];end;break end;break;end break;end while 3126==(n)/((0x80ceb/(0x19e6/26)))do n=(1121922)while(-#"monobola"+(4224/0xb0))>=r do n-= n local c;local D,b;local r;local n;n=e[w];r=l[e[s]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[i]]=N[e[x]];o=o+d;e=a[o];n=e[t];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];n=e[h]D,b=y(l[n](l[n+M]))p=b+n-d c=0;for e=n,p do c=c+d;l[e]=D[c];end;o=o+d;e=a[o];n=e[w]l[n](k(l,n+M,p))o=o+d;e=a[o];l[e[t]]=N[e[f]];o=o+d;e=a[o];n=e[i];r=l[e[x]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[w]]=N[e[s]];o=o+d;e=a[o];l[e[w]]=l[e[f]][e[_]];o=o+d;e=a[o];l[e[i]]=l[e[U]][e[S]];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];l[e[w]]=N[e[x]];o=o+d;e=a[o];n=e[h];r=l[e[O]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[u]))break;end while(n)/((813-0x1a0))==2826 do n=(11567781)while r>(111-0x5e)do n-= n local r;local n;l[e[i]][e[x]]=l[e[C]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[t];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[b]][e[U]]=e[B];o=o+d;e=a[o];l[e[w]][e[U]]=e[D];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[t];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[O]))break end while(n)/((-19+(0x88938/156)))==3243 do local r;local n;l[e[w]][e[s]]=l[e[P]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[t];r=l[e[U]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[c]][e[x]]=e[B];o=o+d;e=a[o];l[e[h]][e[s]]=e[D];o=o+d;e=a[o];l[e[t]][e[x]]=e[S];o=o+d;e=a[o];l[e[t]][e[O]]=e[C];o=o+d;e=a[o];l[e[w]][e[u]]=e[B];o=o+d;e=a[o];l[e[c]][e[O]]=e[S];break end;break;end break;end break;end while(n)/((563+-0x66))==3114 do n=(7068250)while(0x873/103)>=r do n-= n n=(7526538)while(101+-0x52)>=r do n-= n local r;local n;l[e[h]][e[f]]=l[e[C]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[i]]=e[s];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];n=e[h];r=l[e[O]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[t]][e[u]]=e[C];o=o+d;e=a[o];l[e[t]][e[u]]=e[C];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[u]))break;end while(n)/((722448/0xe8))==2417 do n=(9236964)while(0xa6-146)<r do n-= n do return end;break end while 3306==(n)/((-0x4b+2869))do local r;local n;l[e[b]][e[x]]=l[e[_]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];l[e[w]][e[x]]=l[e[S]];o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[b]]=e[s];o=o+d;e=a[o];n=e[b]l[n](k(l,n+M,e[U]))o=o+d;e=a[o];n=e[t];r=l[e[x]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[w]][e[u]]=e[P];o=o+d;e=a[o];l[e[c]]=l[e[u]][e[B]];break end;break;end break;end while 2885==(n)/(((461652/0x5d)-2514))do n=(2068767)while(0xa9-146)>=r do n-= n n=(7395048)while r>((0xd41/87)+-17)do n-= n local r;local n;l[e[i]][e[s]]=l[e[P]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[t];r=l[e[u]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[w]][e[x]]=e[_];o=o+d;e=a[o];l[e[c]][e[U]]=e[_];break end while 2274==(n)/((0x1988-3284))do local r;local n;l[e[b]][e[u]]=l[e[B]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[h];r=l[e[O]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[h]][e[O]]=e[_];o=o+d;e=a[o];l[e[h]][e[U]]=e[S];o=o+d;e=a[o];l[e[w]][e[u]]=e[S];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[h];r=l[e[U]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]=e[f];break end;break;end while 579==(n)/((-0x50+3653))do n=(3904389)while r>(-0x21+57)do n-= n local e=e[b]l[e](l[e+M])break end while 1107==(n)/((0x1ba7-3552))do local r;local n;l[e[h]][e[u]]=l[e[D]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];l[e[w]][e[f]]=l[e[C]];o=o+d;e=a[o];n=e[b];r=l[e[U]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[b]]=e[u];o=o+d;e=a[o];n=e[i]l[n](k(l,n+M,e[U]))o=o+d;e=a[o];n=e[h];r=l[e[x]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[h]][e[U]]=e[S];o=o+d;e=a[o];l[e[w]]=l[e[x]][e[C]];break end;break;end break;end break;end break;end break;end while 1320==(n)/((-#"Moonsec An IB2 fork sooo secure and we love it and federal is so straight and federal owns Luauth and we love spoons and if sonic was here federal would die a painful death and he would turn into dust"+((73293696/0x95)/0xc0)))do n=(670640)while(-34+(-#[[Quiero pene]]+(0x14c0/64)))>=r do n-= n n=(7393878)while(144-0x71)>=r do n-= n n=(7905330)while(80+-0x34)>=r do n-= n n=(7000770)while(-0x6e+136)>=r do n-= n local r;local n;l[e[t]]=N[e[x]];o=o+d;e=a[o];n=e[b];r=l[e[u]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];n=e[h]l[n](l[n+M])o=o+d;e=a[o];l[e[h]]=N[e[x]];o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];n=e[b]l[n](l[n+M])o=o+d;e=a[o];do return end;break;end while(n)/(((0x1ee4-3966)+-#'loading trojan horse'))==1785 do n=(8196084)while(-#'Zapperqr is leaker'+(0xbb-142))<r do n-= n local r;local n;l[e[w]]=l[e[x]][e[C]];o=o+d;e=a[o];l[e[w]][e[U]]=l[e[P]];o=o+d;e=a[o];n=e[i];r=l[e[u]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];n=e[c]l[n]=l[n](l[n+M])o=o+d;e=a[o];l[e[w]][e[s]]=l[e[C]];o=o+d;e=a[o];l[e[i]][e[u]]=e[D];break end while(n)/(((0x1444-2634)+-#"ohhhh nice code thanks"))==3237 do local r;local n;l[e[h]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[i];r=l[e[u]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[c]]=m[e[x]];o=o+d;e=a[o];l[e[h]]=l[e[f]][e[C]];o=o+d;e=a[o];l[e[h]]=l[e[x]][e[D]];o=o+d;e=a[o];l[e[t]][e[x]]=l[e[C]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[b]]=m[e[f]];break end;break;end break;end while 3618==(n)/((0x3c479/113))do n=(2986913)while(0x1821/213)>=r do n-= n local d=e[c];local n=l[d+2];local a=l[d]+n;l[d]=a;if(n>0)then if(a<=l[d+1])then o=e[O];l[d+3]=a;end elseif(a>=l[d+1])then o=e[u];l[d+3]=a;end break;end while(n)/(((-0x43+924)+-#'real roblox omg builderman caught playing real'))==3683 do n=(704682)while((154-0x62)+-#'You are an absolute baboon')<r do n-= n local e=e[b];do return k(l,e,p)end;break end while(n)/((-#"anime is for fags"+(0x8c41/167)))==3559 do l[e[t]]=#l[e[f]];break end;break;end break;end break;end while 3723==(n)/((252222/0x7f))do n=(951468)while((0x55+-19)+-#"free deobfuscator real and legit")>=r do n-= n n=(5745082)while(-0x2c+76)>=r do n-= n local r;local n;l[e[c]][e[s]]=l[e[D]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[b];r=l[e[u]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[w]]={};o=o+d;e=a[o];l[e[t]]=m[e[O]];o=o+d;e=a[o];l[e[w]]=l[e[f]][e[P]];o=o+d;e=a[o];l[e[c]]=e[f];o=o+d;e=a[o];l[e[i]]=e[O];o=o+d;e=a[o];l[e[h]]=e[f];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[u]))break;end while 1673==(n)/((0x1b2c-3522))do n=(6397781)while r>(((-666/0x12)+81)+-#[[sp5rit suck]])do n-= n local c;local w,h;local r;local n;l[e[b]]=N[e[f]];o=o+d;e=a[o];n=e[i];r=l[e[u]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[i]]=N[e[x]];o=o+d;e=a[o];n=e[i];r=l[e[U]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];n=e[b]w,h=y(l[n](l[n+M]))p=h+n-d c=0;for e=n,p do c=c+d;l[e]=w[c];end;o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,p))o=o+d;e=a[o];do return end;break end while 3679==(n)/((213897/0x7b))do local o=e[b];local d=l[o];for e=o+1,e[s]do I(d,l[e])end;break end;break;end break;end while(n)/((4015-0x7f9))==482 do n=(927684)while(-24+(0x73+-55))>=r do n-= n n=(555954)while(-0x68+139)<r do n-= n l[e[i]]();break end while 366==(n)/((0x2eba2/126))do local r;local n;l[e[t]]=N[e[x]];o=o+d;e=a[o];n=e[t];r=l[e[u]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];l[e[c]]=l[e[x]];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];do return end;break end;break;end while 353==(n)/(((0xad5+-125)+-#"loading trojan horse"))do n=(1754532)while(((-#[[Niggabyte]]+(0x101-149))+-0x20)+-#[[imagine not being able to talk]])<r do n-= n local r;local n;l[e[t]]=N[e[O]];o=o+d;e=a[o];n=e[b];r=l[e[x]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[h]]=e[f];o=o+d;e=a[o];l[e[t]]=l[e[U]];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];do return end;break end while 2119==(n)/((-#'Rip Technoblade but he truly never dies in our hearts'+((-94+0x79a)-0x3cb)))do local r;local n;l[e[h]][e[f]]=l[e[D]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[h];r=l[e[s]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[w]][e[O]]=e[C];break end;break;end break;end break;end break;end while 1010==(n)/((0x580-744))do n=(241344)while(-0x62+142)>=r do n-= n n=(2983383)while r<=(-0x2f+88)do n-= n n=(185706)while r<=((4876/0x5c)+-#"jjsplot on top")do n-= n local r;local n;l[e[b]][e[f]]=l[e[D]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[b];r=l[e[f]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[i]][e[O]]=e[B];o=o+d;e=a[o];l[e[h]][e[u]]=e[_];break;end while 171==(n)/(((0x8d6-1169)+-#[[gay men]]))do n=(9056349)while r>(1000/0x19)do n-= n if l[e[t]]then o=o+d;else o=e[O];end;break end while 3581==(n)/((5179-0xa5a))do local o=e[b];do return l[o](k(l,o+1,e[U]))end;break end;break;end break;end while(n)/((13416/0x8))==1779 do n=(4087590)while r<=(-#[[If LocalPlayer equals Dumbass then while true do end]]+((394-0xf0)+-0x3c))do n-= n l[e[i]]=l[e[s]];break;end while 1338==(n)/((6188-0xc3d))do n=(7119712)while((133-0x4f)+-#'moon on top')<r do n-= n local e=e[w];local o=l[e];for e=e+1,p do I(o,l[e])end;break end while 3284==(n)/((4406-0x8be))do local o=e[t]local a,e=y(l[o](k(l,o+1,e[u])))p=e+o-1 local e=0;for o=o,p do e=e+d;l[o]=a[e];end;break end;break;end break;end break;end while(n)/((6778-0xd62))==72 do n=(1132544)while r<=((0x6e+-21)+-#[[Throw on Lose Yourself and make em lose it]])do n-= n n=(5723424)while r<=(((1606050/0x56)/0xe1)+-#"nicuses dick is so good hot emoji here")do n-= n if(l[e[h]]==e[P])then o=o+M;else o=e[O];end;break;end while 4008==(n)/((0xb56-1474))do n=(2373454)while(-#'Its not hip hop its pop cause I found a hella way to fuse it'+(0x10e-(-0x65+265)))<r do n-= n local e=e[b];local o=l[e];for e=e+1,p do I(o,l[e])end;break end while 3238==(n)/((0xcb4b/71))do l[e[i]]=N[e[x]];o=o+d;e=a[o];l[e[t]]=l[e[O]][e[C]];o=o+d;e=a[o];l[e[t]][e[U]]=l[e[D]];o=o+d;e=a[o];l[e[c]]=N[e[f]];o=o+d;e=a[o];l[e[c]]=l[e[U]][e[D]];o=o+d;e=a[o];l[e[c]][e[O]]=l[e[C]];o=o+d;e=a[o];do return end;break end;break;end break;end while 1024==(n)/((-#"no penne pasta"+(2310-0x4a6)))do n=(10077957)while r<=((-0x63+157)+-#[[Alma Alma]])do n-= n n=(10563855)while r>(-87+0x87)do n-= n local r;local n;l[e[t]]=N[e[O]];o=o+d;e=a[o];n=e[i];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[c]]=e[U];o=o+d;e=a[o];l[e[h]]=l[e[f]];o=o+d;e=a[o];n=e[c]l[n](k(l,n+M,e[O]))o=o+d;e=a[o];do return end;break end while 2895==(n)/((0x7f64f/(0x8109/231)))do local r;local n;l[e[b]][e[u]]=l[e[P]];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];n=e[b];r=l[e[u]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]=e[s];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[c];r=l[e[u]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[b]][e[O]]=e[B];o=o+d;e=a[o];l[e[i]][e[x]]=e[P];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[f]))break end;break;end while 3383==(n)/((711981/0xef))do n=(5270016)while r>(-#'i love tatakai'+(0xbf-127))do n-= n local r;local n;l[e[i]][e[u]]=l[e[S]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];l[e[t]][e[s]]=l[e[S]];o=o+d;e=a[o];n=e[i];r=l[e[x]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[c]]=e[s];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[x]))o=o+d;e=a[o];n=e[w];r=l[e[U]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[h]][e[u]]=e[B];o=o+d;e=a[o];l[e[b]]=l[e[s]][e[S]];break end while 2336==(n)/((0x121a-2378))do local r;local n;l[e[h]]=N[e[x]];o=o+d;e=a[o];n=e[h];r=l[e[u]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[w]]=e[O];o=o+d;e=a[o];l[e[c]]=l[e[x]];o=o+d;e=a[o];n=e[c]l[n](k(l,n+M,e[O]))o=o+d;e=a[o];do return end;break end;break;end break;end break;end break;end break;end break;end while 1879==(n)/((0x886+-96))do n=(7938896)while(16401/0xd5)>=r do n-= n n=(10477718)while(167-0x67)>=r do n-= n n=(9640453)while(-#'Protected vírus'+(-0x55+157))>=r do n-= n n=(4649680)while(0x2c4c/210)>=r do n-= n n=(439203)while r<=(8164/0x9d)do n-= n local e=e[t];do return k(l,e,p)end;break;end while(n)/((-32+0x63b))==281 do n=(4221174)while((0xf8-(0x5577/117))+-#'lego hax')<r do n-= n local r;local n;l[e[t]][e[U]]=l[e[C]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[h];r=l[e[O]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[c];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[w]][e[U]]=e[_];o=o+d;e=a[o];l[e[i]][e[O]]=e[B];break end while(n)/((-0x35+1112))==3986 do local r;local n;l[e[w]]=N[e[x]];o=o+d;e=a[o];n=e[h];r=l[e[f]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[t]]=e[O];o=o+d;e=a[o];l[e[w]]=l[e[s]];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[U]))o=o+d;e=a[o];do return end;break end;break;end break;end while 1330==(n)/((0x1b6c-3524))do n=(12136438)while r<=(-61+0x74)do n-= n local d=e[h];local a=l[d]local n=l[d+2];if(n>0)then if(a>l[d+1])then o=e[O];else l[d+3]=a;end elseif(a<l[d+1])then o=e[x];else l[d+3]=a;end break;end while(n)/((0x195b-(0x8435a/165)))==3782 do n=(6270129)while r>(160-0x68)do n-= n local r;local n;l[e[c]]=N[e[u]];o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]=e[U];o=o+d;e=a[o];l[e[b]]=l[e[u]];o=o+d;e=a[o];n=e[c]l[n](k(l,n+M,e[u]))o=o+d;e=a[o];do return end;break end while 1647==(n)/((0x7b9db/133))do local e=e[c]l[e]=l[e](l[e+M])break end;break;end break;end break;end while(n)/(((369534/0x79)+-61))==3221 do n=(668436)while(7620/0x7f)>=r do n-= n n=(1904600)while(0xcb-145)>=r do n-= n local e={l,e};e[M][e[g][b]]=e[d][e[g][B]]+e[M][e[g][u]];break;end while(n)/(((0xe6df/33)+-#'Pipe te amo'))==1070 do n=(2741936)while(0xa3-104)<r do n-= n l[e[i]]={};break end while(n)/((-#[[papier der afghaner wurde von nice dem bombenleger gefickt]]+(1750+-0x10)))==1636 do local c=j[e[O]];local r;local d={};r=q({},{__index=function(o,e)local e=d[e];return e[1][e[2]];end,__newindex=function(l,e,o)local e=d[e]e[1][e[2]]=o;end;});for n=1,e[D]do o=o+M;local e=a[o];if e[(-102+0x67)]==156 then d[n-1]={l,e[x]};else d[n-1]={N,e[O]};end;A[#A+1]=d;end;l[e[i]]=v(c,r,m);break end;break;end break;end while(n)/((-0x50+716))==1051 do n=(1298504)while r<=((26909-0x34cd)/216)do n-= n n=(3577122)while r>(100+-0x27)do n-= n l[e[t]]=l[e[x]]%e[B];break end while(n)/((0xa29-1323))==2799 do local r;local n;l[e[h]][e[s]]=l[e[D]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];l[e[h]][e[f]]=l[e[_]];o=o+d;e=a[o];n=e[c];r=l[e[x]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[c]]=e[f];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[u]))o=o+d;e=a[o];n=e[b];r=l[e[f]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[i]][e[s]]=e[P];o=o+d;e=a[o];l[e[h]]=l[e[x]][e[S]];break end;break;end while(n)/((3121-0x629))==841 do n=(2042028)while r>(-123+0xba)do n-= n l[e[i]]=#l[e[O]];break end while 1572==(n)/((0xa7c-1385))do local o=e[h]l[o]=l[o](k(l,o+d,e[x]))break end;break;end break;end break;end break;end while 3466==(n)/((0x1818-(-0x4c+3221)))do n=(9770067)while(0x8a+-68)>=r do n-= n n=(901832)while r<=(0x3bac/228)do n-= n n=(1723128)while(-105+0xaa)>=r do n-= n local r;local n;l[e[i]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[t];r=l[e[u]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[w]]={};o=o+d;e=a[o];l[e[i]][e[x]]=e[P];o=o+d;e=a[o];l[e[b]][e[f]]=e[D];break;end while 856==(n)/((-0x40+2077))do n=(1135002)while r>(0xa4+-98)do n-= n local e=e[i]l[e]=l[e](l[e+M])break end while(n)/(((0xd93b/167)+-#'jjsplot on top'))==3558 do l[e[w]]=v(j[e[x]],nil,m);break end;break;end break;end while(n)/((2253-0x475))==811 do n=(8926170)while r<=(10200/0x96)do n-= n local r;local n;l[e[w]][e[u]]=l[e[_]];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];n=e[w];r=l[e[f]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[w]][e[u]]=e[B];o=o+d;e=a[o];l[e[w]][e[s]]=e[C];o=o+d;e=a[o];l[e[t]][e[U]]=e[S];o=o+d;e=a[o];l[e[b]][e[O]]=e[P];o=o+d;e=a[o];l[e[i]][e[U]]=e[P];o=o+d;e=a[o];l[e[h]][e[u]]=e[S];break;end while 3630==(n)/((0xa09+-110))do n=(263934)while((0xbe+-79)+-#[[Reduce meme string slowmode when plsplspls]])<r do n-= n local o=e[b]local a,e=y(l[o](k(l,o+1,e[s])))p=e+o-1 local e=0;for o=o,p do e=e+d;l[o]=a[e];end;break end while 258==(n)/((0x34f2c/((0xfa+-33)+-#"Bwomp")))do local o=e[i]l[o](k(l,o+M,e[u]))break end;break;end break;end break;end while 2493==(n)/((-#'algebra'+(0xf87+-49)))do n=(1990289)while r<=(0x108-191)do n-= n n=(501657)while(0x136a/70)>=r do n-= n l[e[w]]=(e[s]~=0);break;end while(n)/((0x105d-(-0x52+2240)))==247 do n=(1635436)while(-55+0x7f)<r do n-= n l[e[t]]={};break end while(n)/(((0x49840/80)+-#[[tunnelposting]]))==436 do l[e[w]][e[s]]=l[e[P]];break end;break;end break;end while 1811==(n)/(((0x90f-1212)+-#"Gay porn"))do n=(10881879)while r<=(15375/0xcd)do n-= n n=(14556280)while r>((-0x42+155)+-#'howtodumpscript')do n-= n local r;local n;l[e[i]][e[s]]=l[e[P]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[b];r=l[e[s]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[h]][e[s]]=e[B];o=o+d;e=a[o];l[e[h]][e[u]]=e[_];break end while 3580==(n)/((4181+-0x73))do if not l[e[t]]then o=o+M;else o=e[x];end;break end;break;end while 2757==(n)/((7981-0xfc2))do n=(5484160)while r>((0x48a9/209)+-#[[suck my balls]])do n-= n local r;local n;l[e[h]][e[U]]=l[e[B]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];l[e[h]][e[u]]=l[e[D]];o=o+d;e=a[o];n=e[c];r=l[e[O]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[t]]=e[u];o=o+d;e=a[o];n=e[b]l[n](k(l,n+M,e[x]))o=o+d;e=a[o];n=e[i];r=l[e[x]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[w]][e[u]]=e[P];o=o+d;e=a[o];l[e[b]][e[O]]=e[B];break end while 1408==(n)/((-41+0xf60))do local r;local n;l[e[i]][e[f]]=l[e[_]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[t];r=l[e[x]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[w]]=m[e[O]];o=o+d;e=a[o];l[e[b]]=l[e[f]][e[P]];o=o+d;e=a[o];l[e[w]]=e[f];o=o+d;e=a[o];l[e[c]]=e[s];o=o+d;e=a[o];l[e[b]]=e[U];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[x]))break end;break;end break;end break;end break;end break;end while(n)/((8258-(0x6ae5a/105)))==1942 do n=(3309980)while r<=(-#'big niggers sucking cock'+((-#'me and the monkey'+(0x140a-2605))/22))do n-= n n=(3031800)while(-67+0x96)>=r do n-= n n=(4616500)while r<=((5398-0xac6)/0x21)do n-= n n=(7161880)while r<=(217-0x8b)do n-= n if(l[e[t]]~=e[P])then o=o+M;else o=e[x];end;break;end while 1985==(n)/((0xe8a+-114))do n=(11699010)while(232-0x99)<r do n-= n local r;local n;l[e[b]]=N[e[x]];o=o+d;e=a[o];n=e[b];r=l[e[u]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[b]]=e[f];o=o+d;e=a[o];l[e[i]]=l[e[x]];o=o+d;e=a[o];n=e[b]l[n](k(l,n+M,e[x]))o=o+d;e=a[o];do return end;break end while(n)/(((0xec38a+-62)/250))==3023 do do return end;break end;break;end break;end while 1319==(n)/((-#'amongass'+(7059-0xddf)))do n=(8717328)while r<=(-#'Ur mom'+(0xc0-105))do n-= n local r;local n;l[e[i]]=N[e[U]];o=o+d;e=a[o];n=e[c];r=l[e[O]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[i]]=e[s];o=o+d;e=a[o];l[e[i]]=l[e[s]];o=o+d;e=a[o];n=e[i]l[n](k(l,n+M,e[O]))o=o+d;e=a[o];do return end;break;end while(n)/((156684/0x42))==3672 do n=(1788600)while(17466/0xd5)<r do n-= n l[e[b]]=N[e[x]];break end while 1355==(n)/((-0x65+1421))do l[e[i]]=l[e[s]][e[S]];o=o+d;e=a[o];l[e[t]]=l[e[x]][e[_]];o=o+d;e=a[o];l[e[t]]=l[e[u]][e[S]];o=o+d;e=a[o];l[e[c]]=l[e[f]][e[C]];o=o+d;e=a[o];l[e[t]][e[f]]=e[D];break end;break;end break;end break;end while(n)/((203424/0xd0))==3100 do n=(307662)while(-#"how to find my dad at the dollar store getting milk"+(20824/0x98))>=r do n-= n n=(1103813)while(195-0x6f)>=r do n-= n local r;local n;l[e[i]][e[u]]=l[e[P]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];l[e[h]][e[f]]=l[e[_]];o=o+d;e=a[o];n=e[i];r=l[e[f]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[b]]=e[x];o=o+d;e=a[o];n=e[i]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];n=e[t];r=l[e[s]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[b]][e[u]]=e[C];o=o+d;e=a[o];l[e[h]]=l[e[f]][e[D]];break;end while(n)/((-#'You are an absolute baboon'+(0xea1-1930)))==617 do n=(2118925)while r>(-#"why 6 hours cooldown to send a meme strings"+(0x3800/112))do n-= n l[e[b]]=l[e[u]][e[B]];break end while 647==(n)/((0xb3e6b/225))do l[e[h]]=v(j[e[U]],nil,m);break end;break;end break;end while(n)/((-50+0x14c))==1091 do n=(541284)while(0x21b0/98)>=r do n-= n n=(141316)while(0x12b-212)<r do n-= n o=e[x];break end while(n)/((-91+(-0x38+343)))==721 do local r;local n;l[e[b]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[i]l[n](k(l,n+M,e[U]))o=o+d;e=a[o];n=e[w];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[i]][e[U]]=e[S];o=o+d;e=a[o];l[e[w]][e[f]]=e[D];break end;break;end while 3147==(n)/((0x16c-192))do n=(1003168)while r>((-0x3b+(252+-0x60))+-#"lego hax")do n-= n local n;l[e[c]]=l[e[U]];o=o+d;e=a[o];l[e[c]]=l[e[U]];o=o+d;e=a[o];n=e[t];do return l[n](k(l,n+1,e[x]))end;o=o+d;e=a[o];n=e[i];do return k(l,n,p)end;o=o+d;e=a[o];do return end;break end while(n)/((42688/0x5c))==2162 do local r;local n;l[e[c]]=N[e[u]];o=o+d;e=a[o];n=e[w];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];l[e[b]]=l[e[u]];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];do return end;break end;break;end break;end break;end break;end while 1436==(n)/((((407038/0x56)+-#[[goofy ahh uncle productions]])-0x961))do n=(1202940)while r<=(2112/(1738/0x4f))do n-= n n=(3954672)while((252-0x8f)+-#[[get some bitches]])>=r do n-= n n=(1332310)while(0xf0-149)>=r do n-= n local r;local n;l[e[b]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[t]][e[f]]=e[B];o=o+d;e=a[o];l[e[c]][e[x]]=e[C];break;end while(n)/((-#[[Wenomechainsama Tumajarbisaun Wifenlooof Eselifterbraun]]+(332880/0x78)))==490 do n=(374922)while(-#"i shoved a whole bag of jellibeans up my ass"+(0x5478/159))<r do n-= n m[e[u]]=l[e[w]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];m[e[U]]=l[e[h]];o=o+d;e=a[o];l[e[c]]=m[e[s]];o=o+d;e=a[o];if(l[e[h]]~=e[D])then o=o+M;else o=e[O];end;break end while(n)/(((0x1bb-276)+-#[[Omg guys]]))==2358 do local r;local n;l[e[b]][e[s]]=l[e[_]];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[O]))o=o+d;e=a[o];for e=e[t],e[O]do l[e]=nil;end;o=o+d;e=a[o];n=e[w];r=l[e[s]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[b]][e[s]]=e[_];o=o+d;e=a[o];l[e[c]][e[u]]=e[C];break end;break;end break;end while(n)/(((7649-0xeff)+-#"nononono listen listen"))==1044 do n=(5572000)while(0xf7-153)>=r do n-= n local o=e[i];do return l[o](k(l,o+1,e[u]))end;break;end while(n)/((48000/0x18))==2786 do n=(3456839)while(((0xb35e-23019)+-#[[no h]])/0xf1)<r do n-= n local r;local n;l[e[h]]=N[e[f]];o=o+d;e=a[o];n=e[b];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[t]]=N[e[U]];o=o+d;e=a[o];l[e[c]]=l[e[x]][e[B]];o=o+d;e=a[o];l[e[b]]=l[e[u]][e[S]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];if not l[e[c]]then o=o+M;else o=e[U];end;break end while(n)/(((-87+((2963-0x606)+-#"federal communication"))+-#[[hi momma teach me how to make incest]]))==2707 do local d=e[c];local o=l[e[u]];l[d+1]=o;l[d]=o[e[D]];break end;break;end break;end break;end while 3690==(n)/((443+-0x75))do n=(2957542)while(0x131-206)>=r do n-= n n=(6052)while r<=(-0x7f+224)do n-= n local r;local n;l[e[c]][e[U]]=l[e[P]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];l[e[i]][e[x]]=l[e[C]];o=o+d;e=a[o];n=e[i];r=l[e[s]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[c]]=e[u];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[u]))o=o+d;e=a[o];n=e[w];r=l[e[s]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[w]]={};o=o+d;e=a[o];l[e[w]][e[U]]=e[C];o=o+d;e=a[o];l[e[h]]=l[e[U]][e[_]];break;end while 68==(n)/((154+-0x41))do n=(1259720)while(0x108-(-83+0xf9))<r do n-= n local e=e[b]l[e]=l[e]()break end while 440==(n)/((592641/0xcf))do local e={l,e};e[M][e[g][c]]=e[d][e[g][S]]+e[M][e[g][x]];break end;break;end break;end while 1442==(n)/((0x1042-2111))do n=(225837)while r<=(-0x7c+225)do n-= n n=(2303084)while r>(253-0x99)do n-= n do return l[e[i]]end break end while(n)/((0x4b764/133))==991 do local r;local n;l[e[c]][e[f]]=l[e[D]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[t];r=l[e[u]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[i]]=m[e[x]];o=o+d;e=a[o];l[e[b]]=l[e[s]][e[P]];o=o+d;e=a[o];l[e[h]]=e[f];o=o+d;e=a[o];l[e[b]]=e[U];o=o+d;e=a[o];l[e[w]]=e[U];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[u]))break end;break;end while(n)/((-86+(-63+0x164)))==1091 do n=(1877118)while(-#"With rock shock rap with Doc"+(0x7ef4/250))<r do n-= n local r;local n;l[e[t]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[c];r=l[e[x]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[c]][e[f]]=e[B];o=o+d;e=a[o];l[e[c]][e[f]]=e[_];o=o+d;e=a[o];l[e[i]][e[u]]=e[B];o=o+d;e=a[o];l[e[i]][e[u]]=e[D];o=o+d;e=a[o];l[e[h]][e[x]]=e[S];o=o+d;e=a[o];l[e[h]][e[f]]=e[P];break end while(n)/((-82+0xcfc))==579 do local M;local B,P;local r;local n;m[e[s]]=l[e[b]];o=o+d;e=a[o];l[e[c]]=m[e[f]];o=o+d;e=a[o];l[e[h]]=m[e[O]];o=o+d;e=a[o];n=e[w];r=l[e[O]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[t]]=e[u];o=o+d;e=a[o];n=e[i]B,P=y(l[n](k(l,n+1,e[U])))p=P+n-1 M=0;for e=n,p do M=M+d;l[e]=B[M];end;o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,p))o=o+d;e=a[o];n=e[h]l[n]=l[n]()o=o+d;e=a[o];n=e[t];r=l[e[f]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[i]]=e[x];break end;break;end break;end break;end break;end break;end break;end break;end while 1858==(n)/(((0x1a1b2/85)+-#'mama mo'))do n=(1099356)while r<=(0x191-246)do n-= n n=(6639136)while r<=(-#"local ballsack equals game dot players dot local player dot character dot humanoid dot torso dot ballsack"+(27612/0x76))do n-= n n=(4225728)while r<=(-#"weezer"+(0x167-237))do n-= n n=(3801420)while r<=(0x114-167)do n-= n n=(3633080)while r<=(0xac+-66)do n-= n n=(4395608)while(-#[[moon sex is better than lua guard]]+(-0x37+192))>=r do n-= n local d=e[x];local o=l[d]for e=d+1,e[P]do o=o..l[e];end;l[e[w]]=o;break;end while(n)/(((1527+-0x14)+-#'ip grabbing in progress'))==2962 do n=(2543961)while(-0x2d+150)<r do n-= n l[e[i]]();break end while 687==(n)/((7500-0xed5))do local r;local n;l[e[w]][e[u]]=l[e[D]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[w];r=l[e[x]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[c]][e[x]]=e[C];o=o+d;e=a[o];l[e[h]][e[f]]=e[S];o=o+d;e=a[o];l[e[w]][e[U]]=e[_];o=o+d;e=a[o];l[e[w]][e[u]]=e[P];o=o+d;e=a[o];l[e[i]][e[s]]=e[S];o=o+d;e=a[o];l[e[c]][e[u]]=e[P];break end;break;end break;end while 1795==(n)/(((-71+0x869)+-#"abortion is a right dont take it away in the USA date 2022"))do n=(5122800)while(((0x3d3-529)-256)+-#"when the he went where when he where where when the he when ther wher he then here went")>=r do n-= n local r;local n;l[e[t]][e[f]]=l[e[C]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];l[e[c]][e[s]]=l[e[_]];o=o+d;e=a[o];n=e[w];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[c]]=e[f];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];n=e[h];r=l[e[u]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[w]][e[O]]=e[C];o=o+d;e=a[o];l[e[h]]=l[e[O]][e[D]];break;end while 3600==(n)/((-0x1d+1452))do n=(5015808)while(314-0xce)<r do n-= n local r;local n;l[e[i]]=N[e[x]];o=o+d;e=a[o];n=e[i];r=l[e[x]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[c]]=N[e[U]];o=o+d;e=a[o];l[e[b]]=l[e[f]][e[D]];o=o+d;e=a[o];l[e[h]]=l[e[O]][e[P]];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];do return end;break end while 2488==(n)/((-#'Smokey BArbecue BAcon BUford from checkers mm'+(0x23b9b/71)))do local r;local n;l[e[i]][e[x]]=l[e[C]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[w]]={};o=o+d;e=a[o];l[e[h]]=m[e[s]];o=o+d;e=a[o];l[e[h]]=l[e[s]][e[P]];o=o+d;e=a[o];l[e[w]]=e[u];o=o+d;e=a[o];l[e[c]]=e[u];o=o+d;e=a[o];l[e[c]]=e[U];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[s]))break end;break;end break;end break;end while 2586==(n)/((-#'What I gotta do to get it through to you Im superhuman'+(-25+0x60d)))do n=(887536)while(-#'fix vg hub dekudimz'+(0x644c/196))>=r do n-= n n=(961695)while(11000/0x64)>=r do n-= n l[e[w]]=(e[O]~=0);o=o+M;break;end while(n)/((-#[[atakan der nigga]]+(0x1c905/177)))==1491 do n=(4516138)while((250+-0x65)+-#"i dont fucking care if its your own ui")<r do n-= n local e=e[i]local a,o=y(l[e](l[e+M]))p=o+e-d local o=0;for e=e,p do o=o+d;l[e]=a[o];end;break end while 1133==(n)/((8071-0xff5))do local r;local n;l[e[c]][e[O]]=l[e[C]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[b];r=l[e[x]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[t]][e[U]]=e[B];o=o+d;e=a[o];l[e[c]][e[U]]=e[C];break end;break;end break;end while(n)/((-#'warboy hates you'+(0x172+-82)))==3263 do n=(7783440)while r<=(0x13f-205)do n-= n n=(1254116)while(11300/0x64)<r do n-= n local b;local s,u;local r;local n;n=e[w];r=l[e[O]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[t]]=e[f];o=o+d;e=a[o];l[e[t]]=(e[U]~=0);o=o+d;e=a[o];n=e[h]s,u=y(l[n](k(l,n+1,e[f])))p=u+n-1 b=0;for e=n,p do b=b+d;l[e]=s[b];end;o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,p))o=o+d;e=a[o];n=e[w]l[n]=l[n]()o=o+d;e=a[o];n=e[i];r=l[e[x]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];n=e[w]l[n](l[n+M])o=o+d;e=a[o];l[e[i]]=m[e[x]];o=o+d;e=a[o];l[e[c]]=m[e[O]];break end while(n)/((-56+0xfd2))==314 do if(l[e[h]]==l[e[D]])then o=o+M;else o=e[s];end;break end;break;end while(n)/((-#'kys nigga'+(44442/0x12)))==3164 do n=(366296)while(-#'me and the monkey'+(-0x3e+194))<r do n-= n local r;local n;l[e[c]][e[s]]=l[e[D]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[w];r=l[e[s]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[i]][e[x]]=e[C];o=o+d;e=a[o];l[e[w]][e[O]]=e[_];o=o+d;e=a[o];l[e[t]][e[U]]=e[_];o=o+d;e=a[o];l[e[t]][e[x]]=e[B];o=o+d;e=a[o];l[e[w]][e[O]]=e[D];o=o+d;e=a[o];l[e[w]][e[U]]=e[S];break end while 1477==(n)/((0x253-347))do local r;local n;l[e[b]]=N[e[f]];o=o+d;e=a[o];n=e[i];r=l[e[O]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[b]]=e[O];o=o+d;e=a[o];l[e[c]]=l[e[s]];o=o+d;e=a[o];n=e[w]l[n](k(l,n+M,e[U]))o=o+d;e=a[o];do return end;break end;break;end break;end break;end break;end while 1693==(n)/((-#[[ambatakum]]+(-0x6f+2616)))do n=(1842720)while r<=((0x4410/99)+-54)do n-= n n=(1420024)while(-0x26+157)>=r do n-= n n=(2789472)while(-121+0xee)>=r do n-= n local M;local r;local h,B;local n;l[e[c]]=N[e[U]];o=o+d;e=a[o];l[e[i]][e[x]]=l[e[_]];o=o+d;e=a[o];l[e[t]]=N[e[f]];o=o+d;e=a[o];l[e[w]][e[O]]=l[e[S]];o=o+d;e=a[o];l[e[w]]=N[e[s]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[i]]=m[e[O]];o=o+d;e=a[o];l[e[b]]=l[e[U]][e[D]];o=o+d;e=a[o];l[e[i]]=e[O];o=o+d;e=a[o];l[e[t]]=m[e[f]];o=o+d;e=a[o];n=e[w]h,B=y(l[n](k(l,n+1,e[u])))p=B+n-1 r=0;for e=n,p do r=r+d;l[e]=h[r];end;o=o+d;e=a[o];n=e[i];M=l[n];for e=n+1,p do I(M,l[e])end;break;end while(n)/(((0x66d+-69)+-#'amongass'))==1779 do n=(797664)while((0x121-160)+-#[[nicowashere]])<r do n-= n l[e[b]]=(e[s]~=0);o=o+M;break end while(n)/((0x1af37/31))==224 do local r;local n;n=e[c];r=l[e[O]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[c]][e[s]]=e[S];o=o+d;e=a[o];l[e[i]][e[u]]=e[S];o=o+d;e=a[o];l[e[c]][e[U]]=e[B];o=o+d;e=a[o];l[e[w]][e[O]]=e[B];o=o+d;e=a[o];l[e[w]][e[O]]=e[D];o=o+d;e=a[o];l[e[i]][e[s]]=e[S];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];l[e[c]]=m[e[s]];break end;break;end break;end while 2554==(n)/(((1219-0x27b)+-#'10 black dicks in your mouth'))do n=(4334235)while(0x10d-149)>=r do n-= n l[e[i]]=(e[x]~=0);break;end while(n)/(((0x1bc10/58)+-#"false"))==2217 do n=(6607116)while(331-0xd2)<r do n-= n local r;local n;n=e[h]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];n=e[w];r=l[e[x]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[b]]=m[e[U]];o=o+d;e=a[o];l[e[h]]=l[e[s]][e[D]];o=o+d;e=a[o];l[e[i]]=e[U];o=o+d;e=a[o];l[e[h]]=e[f];o=o+d;e=a[o];l[e[i]]=e[U];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];l[e[w]][e[f]]=l[e[S]];break end while 1868==(n)/((-#[[nate higger nuck figgers and nill kiggers]]+(-61+0xe37)))do local n;local r;r=e[h];n=l[e[U]];l[r+1]=n;l[r]=n[e[D]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[t]][e[O]]=e[D];o=o+d;e=a[o];l[e[b]][e[f]]=e[P];o=o+d;e=a[o];l[e[h]]=m[e[u]];o=o+d;e=a[o];l[e[t]]=l[e[f]][e[B]];o=o+d;e=a[o];l[e[i]]=l[e[s]][e[S]];o=o+d;e=a[o];l[e[i]][e[s]]=l[e[_]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[i]]=m[e[f]];break end;break;end break;end break;end while(n)/((-#'Zapperqr is leaker'+(0xdfd+-73)))==528 do n=(10178496)while(-#"Fucking Retarted"+(381-0xf0))>=r do n-= n n=(5028350)while r<=(0xd8+-93)do n-= n local r;local n;l[e[t]][e[O]]=l[e[S]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[i];r=l[e[x]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[i]][e[u]]=e[P];o=o+d;e=a[o];l[e[h]][e[s]]=e[C];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[i]]=e[x];o=o+d;e=a[o];l[e[i]]=e[s];o=o+d;e=a[o];l[e[b]]=e[s];break;end while(n)/((0x9e4f/27))==3350 do n=(4040612)while(0xd14/27)<r do n-= n local r;local n;l[e[h]][e[O]]=l[e[D]];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[O]))o=o+d;e=a[o];n=e[t];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[i]][e[f]]=e[_];o=o+d;e=a[o];l[e[b]][e[U]]=e[P];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[i];r=l[e[u]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[t]][e[U]]=e[C];break end while 1571==(n)/((-0x2c+2616))do if(l[e[c]]~=e[B])then o=o+M;else o=e[s];end;break end;break;end break;end while(n)/(((-92+0xde2)+-#"jjsplot on top"))==2952 do n=(2204016)while(0x4ee1/(241+-0x52))>=r do n-= n n=(2751270)while r>((357-0xdd)+-#[[send nudes]])do n-= n local r;local n;l[e[w]][e[U]]=l[e[C]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];n=e[t];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[w]][e[O]]=e[B];o=o+d;e=a[o];l[e[i]][e[O]]=e[P];break end while 1565==(n)/((33402/0x13))do local e=e[b]l[e]=l[e](k(l,e+d,p))break end;break;end while 3504==(n)/((-118+0x2eb))do n=(5246601)while(-54+0xb6)<r do n-= n l[e[b]][e[O]]=e[B];break end while 3687==(n)/((-65+0x5d0))do local r;local n;l[e[h]][e[O]]=l[e[_]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];l[e[h]][e[s]]=l[e[S]];o=o+d;e=a[o];n=e[w];r=l[e[U]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[c]]=e[U];o=o+d;e=a[o];n=e[w]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];n=e[h];r=l[e[U]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[b]][e[s]]=e[_];o=o+d;e=a[o];l[e[w]]=l[e[s]][e[C]];break end;break;end break;end break;end break;end break;end while(n)/(((620418/0x9f)+-#[[moonsec got deobfuscated]]))==1712 do n=(7812256)while(336-((0xdc38/232)+-#[[Uh summa lumma dooma lumma you assumin Im a human]]))>=r do n-= n n=(462840)while r<=((0x636/10)+-#'one foot is in the grave')do n-= n n=(4396748)while r<=(176+-0x2c)do n-= n n=(7685910)while r<=(12740/(-78+0xb0))do n-= n l[e[w]]=l[e[x]][l[e[P]]];break;end while(n)/((4759-0x955))==3243 do n=(4395050)while((0x3ae0/96)+-#"Obfuscated by my ass hurts")<r do n-= n local r;local n;l[e[b]][e[u]]=l[e[S]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[t];r=l[e[x]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[b]][e[U]]=e[_];o=o+d;e=a[o];l[e[b]][e[u]]=e[P];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[i];r=l[e[O]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[t]][e[u]]=e[S];break end while(n)/((6210-0xc58))==1441 do l[e[b]]=l[e[f]][e[C]];o=o+d;e=a[o];l[e[b]]=l[e[O]][e[P]];o=o+d;e=a[o];l[e[i]]=l[e[f]][e[S]];o=o+d;e=a[o];l[e[b]]=l[e[x]][e[C]];o=o+d;e=a[o];l[e[w]][e[O]]=l[e[P]];break end;break;end break;end while(n)/((-#[[Gay porn]]+(6795-0xd5f)))==1307 do n=(3650544)while(0x186-257)>=r do n-= n local r;local n;l[e[h]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[t];r=l[e[s]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[t]][e[O]]=e[S];o=o+d;e=a[o];l[e[i]][e[f]]=e[S];o=o+d;e=a[o];l[e[h]][e[s]]=e[_];o=o+d;e=a[o];l[e[i]][e[x]]=e[_];o=o+d;e=a[o];l[e[b]][e[U]]=e[B];o=o+d;e=a[o];l[e[i]][e[f]]=e[D];break;end while(n)/((0x929+-86))==1616 do n=(1398630)while(259+-0x7d)<r do n-= n local r;local n;l[e[i]][e[f]]=l[e[C]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[h];r=l[e[s]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[h]]=e[x];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[w];r=l[e[u]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[w]][e[s]]=e[P];o=o+d;e=a[o];l[e[w]][e[u]]=e[C];o=o+d;e=a[o];l[e[c]][e[U]]=e[_];break end while 2027==(n)/(((0x36c+-88)+-#[[People trying to play roblox colon meanwhile crosswoods colon may I introduce myself question mark]]))do local n=e[t];local r=e[_];local a=n+2 local n={l[n](l[n+1],l[a])};for e=1,r do l[a+e]=n[e];end;local n=n[1]if n then l[a]=n o=e[x];else o=o+d;end;break end;break;end break;end break;end while(n)/((-#'you cut your pubes with nail clippers'+(7104-0xe03)))==133 do n=(3578316)while r<=((((4936074/0x8f)+-#'Gay porn')/238)+-#"elbicho")do n-= n n=(2439999)while(2448/0x12)>=r do n-= n local r;local n;l[e[h]][e[s]]=l[e[D]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[h];r=l[e[s]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[c]]=m[e[u]];o=o+d;e=a[o];l[e[i]]=l[e[s]][e[_]];o=o+d;e=a[o];l[e[b]]=e[x];o=o+d;e=a[o];l[e[i]]=e[O];o=o+d;e=a[o];l[e[b]]=e[U];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[f]))break;end while(n)/((1536-(-#"Rip Technoblade but he truly never dies in our hearts"+(900+-0x3e))))==3249 do n=(4788360)while r>(-0x7b+260)do n-= n local c;local U,s;local r;local n;l[e[b]]=N[e[f]];o=o+d;e=a[o];n=e[h];r=l[e[x]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[i]]=N[e[x]];o=o+d;e=a[o];l[e[b]]=l[e[f]][e[S]];o=o+d;e=a[o];l[e[h]]=l[e[O]][e[D]];o=o+d;e=a[o];n=e[b]l[n](k(l,n+M,e[O]))o=o+d;e=a[o];l[e[i]]=N[e[f]];o=o+d;e=a[o];n=e[w];r=l[e[f]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[t]]=N[e[x]];o=o+d;e=a[o];n=e[i];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];n=e[i]U,s=y(l[n](l[n+M]))p=s+n-d c=0;for e=n,p do c=c+d;l[e]=U[c];end;o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,p))o=o+d;e=a[o];do return end;break end while(n)/((0x954+-124))==2115 do local r;local n;l[e[w]][e[U]]=l[e[B]];o=o+d;e=a[o];n=e[b]l[n](k(l,n+M,e[x]))o=o+d;e=a[o];n=e[t];r=l[e[f]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[i]][e[s]]=e[S];break end;break;end break;end while 1148==(n)/((-#[[Ginglebog]]+(-0x66+3228)))do n=(7184147)while(163+-0x17)>=r do n-= n n=(72177)while r>(0xfd+-114)do n-= n local r;local n;l[e[c]][e[O]]=l[e[S]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[i];r=l[e[O]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[w]]=m[e[u]];o=o+d;e=a[o];l[e[i]]=l[e[U]][e[C]];o=o+d;e=a[o];l[e[b]]=e[u];o=o+d;e=a[o];l[e[c]]=e[s];o=o+d;e=a[o];l[e[i]]=e[U];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[u]))break end while(n)/((0xc1-144))==1473 do l[e[c]]=m[e[s]];break end;break;end while(n)/((0x32308/56))==1957 do n=(354900)while r>((-71+0xea)+-#"I watch gay furry porn")do n-= n l[e[w]]=l[e[U]][e[B]];break end while(n)/(((61050/0x6e)+-#'arab porn'))==650 do N[e[s]]=l[e[i]];break end;break;end break;end break;end break;end while(n)/(((0xfa3-(0x7062/14))+-#"aint you nathaniel b"))==4052 do n=(8699663)while r<=(-#"panzerfaust"+(-36+0xc3))do n-= n n=(1945968)while(0x4c77/135)>=r do n-= n n=(5480366)while(36322/0xfe)>=r do n-= n local r;local n;l[e[h]][e[s]]=l[e[P]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[c];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[i]]=m[e[O]];o=o+d;e=a[o];l[e[c]]=l[e[x]][e[P]];o=o+d;e=a[o];l[e[t]]=e[U];o=o+d;e=a[o];l[e[c]]=e[O];o=o+d;e=a[o];l[e[w]]=e[O];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[U]))break;end while 2294==(n)/((-#'dot gg slash BKf6SjpfFv'+(98892/0x29)))do n=(13562725)while(((472+-0x38)-258)+-#"sexo 4 o filme")<r do n-= n local r;local n;l[e[h]]=N[e[x]];o=o+d;e=a[o];n=e[w];r=l[e[x]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[w]]=e[O];o=o+d;e=a[o];l[e[c]]=l[e[s]];o=o+d;e=a[o];n=e[i]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];do return end;break end while(n)/(((-0x38+7524)-0xe9f))==3641 do local n;l[e[t]]=e[f];o=o+d;e=a[o];l[e[i]]=e[O];o=o+d;e=a[o];l[e[t]]=e[u];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];l[e[h]][e[u]]=l[e[S]];o=o+d;e=a[o];l[e[w]][e[U]]=e[B];break end;break;end break;end while(n)/((-#'local ballsack equals game dot players dot local player dot character dot humanoid dot torso dot ballsack'+(0xe6e-1885)))==1142 do n=(445738)while r<=(-0x57+233)do n-= n local r;local n;l[e[h]][e[u]]=l[e[B]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[c];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[t]]=m[e[U]];o=o+d;e=a[o];l[e[t]]=l[e[U]][e[B]];o=o+d;e=a[o];l[e[b]]=e[s];o=o+d;e=a[o];l[e[b]]=e[f];o=o+d;e=a[o];l[e[w]]=e[f];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[u]))break;end while 3053==(n)/((-#"Fucking losed 027728272728271"+(-118+0x125)))do n=(533978)while((-46+0xff)+-#[[Help I cant think of a funny and original meme string pls help]])<r do n-= n l[e[h]]=e[f];break end while(n)/((88712/0x34))==313 do local r;local n;l[e[c]][e[x]]=l[e[P]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[t];r=l[e[u]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[h]]=e[x];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];n=e[b];r=l[e[u]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[w]]={};o=o+d;e=a[o];l[e[t]][e[U]]=e[C];o=o+d;e=a[o];l[e[b]][e[s]]=e[B];break end;break;end break;end break;end while(n)/((3161+(-11+-0x4d)))==2831 do n=(580032)while(222+-0x47)>=r do n-= n n=(2866864)while r<=(0x15b-198)do n-= n local r;local n;l[e[c]]=l[e[U]][e[_]];o=o+d;e=a[o];l[e[t]]=m[e[x]];o=o+d;e=a[o];l[e[b]]=l[e[O]][e[P]];o=o+d;e=a[o];l[e[c]]=l[e[O]][e[S]];o=o+d;e=a[o];l[e[c]]=m[e[f]];o=o+d;e=a[o];l[e[c]]=l[e[u]][e[B]];o=o+d;e=a[o];l[e[w]]=l[e[x]][e[S]];o=o+d;e=a[o];n=e[i];r=l[n];for e=n+1,e[U]do I(r,l[e])end;break;end while 1432==(n)/((0xfce-2044))do n=(3895155)while((-47+0x10c)+-71)<r do n-= n l[e[w]]=l[e[x]]-l[e[B]];break end while 2623==(n)/((0x60e+(-#'moon on top'+(-5-0x31))))do local d=e[x];local o=l[d]for e=d+1,e[_]do o=o..l[e];end;l[e[t]]=o;break end;break;end break;end while(n)/((302+-0x5a))==2736 do n=(7611896)while r<=(402-0xf9)do n-= n n=(7061580)while(329-0xb1)<r do n-= n if not l[e[c]]then o=o+M;else o=e[u];end;break end while 2906==(n)/((0x17232/39))do local e=e[w]local a,o=y(l[e](l[e+M]))p=o+e-d local o=0;for e=e,p do o=o+d;l[e]=a[o];end;break end;break;end while 3772==(n)/((-0x32+2068))do n=(11005120)while(0x63dc/166)<r do n-= n local r;local n;l[e[b]]=N[e[x]];o=o+d;e=a[o];n=e[w];r=l[e[u]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[h]]=e[u];o=o+d;e=a[o];l[e[b]]=l[e[O]];o=o+d;e=a[o];n=e[w]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];do return end;break end while 2720==(n)/((-#[[go kys go kys go kys]]+(0xb5a8e/183)))do N[e[O]]=l[e[c]];break end;break;end break;end break;end break;end break;end break;end while 578==(n)/((-0x13+1921))do n=(1897875)while r<=(251+-0x46)do n-= n n=(5343250)while r<=((0x2fa2/67)+-#[[i love tatakai]])do n-= n n=(12573600)while r<=(0x9974/244)do n-= n n=(13801160)while(0x15e-192)>=r do n-= n n=(2824002)while r<=(-0x78+276)do n-= n l[e[i]]=l[e[O]];break;end while(n)/((5515-0xaed))==1039 do n=(1365510)while(0x42d9/109)<r do n-= n local x;local r;local n;l[e[h]]=e[s];o=o+d;e=a[o];l[e[w]]=e[O];o=o+d;e=a[o];l[e[c]]=#l[e[U]];o=o+d;e=a[o];l[e[b]]=e[O];o=o+d;e=a[o];n=e[i];r=l[n]x=l[n+2];if(x>0)then if(r>l[n+1])then o=e[u];else l[n+3]=r;end elseif(r<l[n+1])then o=e[U];else l[n+3]=r;end break end while(n)/((0x63ba/74))==3958 do local r;local n;l[e[w]][e[s]]=l[e[_]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[t];r=l[e[U]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[c]][e[O]]=e[S];o=o+d;e=a[o];l[e[t]][e[U]]=e[D];o=o+d;e=a[o];l[e[t]][e[x]]=e[_];o=o+d;e=a[o];l[e[w]][e[s]]=e[_];o=o+d;e=a[o];l[e[b]][e[s]]=e[S];o=o+d;e=a[o];l[e[c]][e[x]]=e[D];break end;break;end break;end while 3880==(n)/((7160-0xe13))do n=(2913812)while r<=(0xe7+-72)do n-= n local o=e[w]l[o](k(l,o+M,e[O]))break;end while(n)/((0x165b-2905))==1034 do n=(461250)while r>(31040/0xc2)do n-= n local r;local n;n=e[b];r=l[e[s]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[b]]=e[O];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[c];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[w]][e[x]]=e[C];o=o+d;e=a[o];l[e[h]][e[f]]=e[P];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[c];r=l[e[O]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[h]]={};break end while(n)/((167895/((0x5da/14)+-#'no dick no balls')))==250 do local r;local n;l[e[t]][e[u]]=l[e[D]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];m[e[U]]=l[e[w]];o=o+d;e=a[o];for e=e[w],e[U]do l[e]=nil;end;o=o+d;e=a[o];n=e[i];r=l[e[f]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[t]][e[U]]=e[C];o=o+d;e=a[o];l[e[h]][e[U]]=e[_];break end;break;end break;end break;end while(n)/((4101+-0x2d))==3100 do n=(8587001)while((43925/0xfb)+-#[[Pipe te amo]])>=r do n-= n n=(3840165)while r<=(-#'fix ownerof'+(-118+0x123))do n-= n local r;local n;n=e[b];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[w]]=l[e[x]];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];l[e[c]]=m[e[u]];o=o+d;e=a[o];l[e[i]]=N[e[s]];o=o+d;e=a[o];for e=e[c],e[x]do l[e]=nil;end;o=o+d;e=a[o];o=e[x];break;end while(n)/((0x20401/113))==3285 do n=(4370380)while r>((-107+0x35)+0xd9)do n-= n l[e[t]][e[O]]=e[P];break end while(n)/((-0x2e+2402))==1855 do local r;local n;l[e[h]][e[x]]=l[e[S]];o=o+d;e=a[o];n=e[h]l[n](k(l,n+M,e[f]))o=o+d;e=a[o];n=e[c];r=l[e[O]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[t]][e[O]]=e[D];o=o+d;e=a[o];l[e[c]][e[O]]=e[P];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];n=e[w];r=l[e[f]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]={};break end;break;end break;end while 4007==(n)/((362167/0xa9))do n=(13546078)while(0x1c9-291)>=r do n-= n n=(1443464)while r>((0x11d+(-#"blinx1 is a sissy little femboy that loves men"+(-2320/0x91)))+-#[[papier der afghaner wurde von nice dem bombenleger gefickt]])do n-= n l[e[h]]=N[e[s]];o=o+d;e=a[o];l[e[b]]=#l[e[x]];o=o+d;e=a[o];N[e[x]]=l[e[h]];o=o+d;e=a[o];l[e[t]]=N[e[u]];o=o+d;e=a[o];l[e[i]]=#l[e[f]];o=o+d;e=a[o];N[e[u]]=l[e[t]];o=o+d;e=a[o];do return end;break end while(n)/((0x49354/145))==698 do local r;local n;l[e[h]][e[O]]=l[e[S]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[c];r=l[e[O]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[c]]=e[s];o=o+d;e=a[o];n=e[b]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];n=e[h];r=l[e[O]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[t]][e[U]]=e[B];o=o+d;e=a[o];l[e[w]][e[u]]=e[D];o=o+d;e=a[o];l[e[w]][e[O]]=e[S];break end;break;end while(n)/(((950534-0x7409d)/139))==3962 do n=(1559550)while r>(0xee+-71)do n-= n local r;local n;l[e[t]][e[u]]=l[e[B]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[h];r=l[e[O]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[b]][e[O]]=e[B];o=o+d;e=a[o];l[e[i]][e[U]]=e[C];break end while(n)/(((0xce97/61)+-#[[Big hairy logs are yummy]]))==1850 do l[e[i]][l[e[f]]]=l[e[C]];break end;break;end break;end break;end break;end while 3190==(n)/((0x4b3e8/184))do n=(8872128)while r<=(30624/0xb0)do n-= n n=(2067010)while r<=(0x9fa5/239)do n-= n n=(2698070)while(-#"aint you nathaniel b"+(0x485a/98))>=r do n-= n l[e[c]]=e[s];break;end while 1003==(n)/((0x1547-2757))do n=(8678556)while r>(0x101+-87)do n-= n local r;local n;l[e[t]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[i];r=l[e[f]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[c]][e[f]]=e[_];o=o+d;e=a[o];l[e[i]][e[x]]=e[B];break end while 3852==(n)/((-0x1c+2281))do local B;local r;local U;local n;l[e[w]]=m[e[f]];o=o+d;e=a[o];l[e[i]]=l[e[f]][e[D]];o=o+d;e=a[o];n=e[b];U=l[e[u]];l[n+1]=U;l[n]=U[e[P]];o=o+d;e=a[o];l[e[t]]=l[e[x]];o=o+d;e=a[o];l[e[i]]=l[e[x]];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[c];U=l[e[O]];l[n+1]=U;l[n]=U[e[C]];o=o+d;e=a[o];n=e[h]l[n]=l[n](l[n+M])o=o+d;e=a[o];r={l,e};r[M][r[g][b]]=r[d][r[g][D]]+r[M][r[g][O]];o=o+d;e=a[o];l[e[h]]=l[e[u]]%e[P];o=o+d;e=a[o];n=e[b]l[n]=l[n](l[n+M])o=o+d;e=a[o];U=e[s];B=l[U]for e=U+1,e[C]do B=B..l[e];end;l[e[t]]=B;o=o+d;e=a[o];r={l,e};r[M][r[g][h]]=r[d][r[g][C]]+r[M][r[g][s]];o=o+d;e=a[o];l[e[t]]=l[e[s]]%e[S];break end;break;end break;end while(n)/(((1828-0x3b4)+-#"Luraph v13 has been released changed absolutely fucking nothing"))==2530 do n=(3880035)while(-0x7e+298)>=r do n-= n l[e[t]]=m[e[u]];break;end while(n)/((0x68f3d/233))==2103 do n=(10410165)while((0x19a-216)+-#'impulse reel pastebin')<r do n-= n m[e[u]]=l[e[b]];break end while(n)/((-92+((0x1b25-3538)+-#"fico éreto para mulheres japonesas")))==3169 do for e=e[b],e[O]do l[e]=nil;end;break end;break;end break;end break;end while(n)/(((-0x7a+2668)+-#"stroking my sh"))==3504 do n=(5382654)while r<=(-#'mstir mid'+(0x1a0-(0x106+-32)))do n-= n n=(6231520)while r<=(-45+0xdc)do n-= n local r;local n;l[e[c]][e[f]]=l[e[B]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[w];r=l[e[u]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[w]]={};o=o+d;e=a[o];l[e[c]][e[x]]=e[_];o=o+d;e=a[o];l[e[b]][e[O]]=e[_];o=o+d;e=a[o];l[e[h]][e[u]]=e[D];o=o+d;e=a[o];l[e[h]][e[x]]=e[C];o=o+d;e=a[o];l[e[i]][e[O]]=e[P];break;end while 2465==(n)/((-0x54+2612))do n=(4253935)while r>(473-0x129)do n-= n local r;local n;l[e[t]][e[U]]=l[e[_]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];l[e[b]][e[u]]=l[e[D]];o=o+d;e=a[o];n=e[b];r=l[e[f]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];l[e[i]]=e[U];o=o+d;e=a[o];n=e[t]l[n](k(l,n+M,e[x]))o=o+d;e=a[o];n=e[b];r=l[e[x]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[t]][e[s]]=e[S];o=o+d;e=a[o];l[e[i]]=l[e[u]][e[P]];break end while 3395==(n)/(((0x53f+-77)+-#"suck my balls"))do local o=e[i]l[o]=l[o](k(l,o+d,e[U]))break end;break;end break;end while(n)/((0xa99-(97057/0x47)))==3999 do n=(300080)while((((47-0x35)+-#[[send nudes]])+0xce)+-#'ching chong')>=r do n-= n n=(4711050)while(0xabbe/247)<r do n-= n local d=e[w];local n=l[d+2];local a=l[d]+n;l[d]=a;if(n>0)then if(a<=l[d+1])then o=e[O];l[d+3]=a;end elseif(a>=l[d+1])then o=e[U];l[d+3]=a;end break end while 2610==(n)/((3721-0x77c))do local r;local n;n=e[w];r=l[e[x]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[h]][e[O]]=e[S];o=o+d;e=a[o];n=e[t];r=l[e[f]];l[n+1]=r;l[n]=r[e[C]];o=o+d;e=a[o];n=e[i]l[n]=l[n](l[n+M])o=o+d;e=a[o];l[e[i]][e[s]]=l[e[C]];o=o+d;e=a[o];l[e[b]][e[O]]=e[D];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[b];r=l[e[U]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[h]]=e[O];break end;break;end while(n)/((5492-0xacc))==110 do n=(962634)while r>((0xa2e5/223)+-#"niggers")do n-= n local r;local n;l[e[b]][e[x]]=l[e[P]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];l[e[h]][e[u]]=l[e[C]];o=o+d;e=a[o];n=e[i];r=l[e[f]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[h]]=e[u];o=o+d;e=a[o];n=e[b]l[n](k(l,n+M,e[U]))o=o+d;e=a[o];n=e[t];r=l[e[O]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[b]][e[x]]=e[B];o=o+d;e=a[o];l[e[b]]=l[e[u]][e[_]];break end while(n)/(((-0x3e+330)+-#"nicuse is nil skull"))==3866 do local r;local n;l[e[w]][e[x]]=l[e[B]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[i];r=l[e[U]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[t]][e[f]]=e[S];o=o+d;e=a[o];l[e[t]][e[x]]=e[C];break end;break;end break;end break;end break;end break;end while 1575==(n)/((-#[[if syn then haxor alert end]]+(162624/0x84)))do n=(4157956)while((40800/(29400/0x93))+-#'send nudes')>=r do n-= n n=(3847695)while r<=(0x1eb-304)do n-= n n=(4947516)while(-0x3c+244)>=r do n-= n n=(2082544)while(0x1b6-256)>=r do n-= n l[e[w]][l[e[s]]]=l[e[S]];break;end while 584==(n)/((7223-0xe49))do n=(3118739)while r>(240+-0x39)do n-= n local r;local n;l[e[b]][e[s]]=l[e[S]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[i];r=l[e[s]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[i]]=m[e[x]];o=o+d;e=a[o];l[e[t]]=l[e[O]][e[P]];o=o+d;e=a[o];l[e[t]]=e[x];o=o+d;e=a[o];l[e[i]]=e[f];o=o+d;e=a[o];l[e[t]]=e[f];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[x]))break end while 1651==(n)/(((-0x81+44)+1974))do l[e[i]]=l[e[O]][e[B]];o=o+d;e=a[o];l[e[t]]=l[e[s]][e[P]];o=o+d;e=a[o];l[e[i]]=l[e[u]][e[C]];o=o+d;e=a[o];l[e[h]]=l[e[x]][e[D]];o=o+d;e=a[o];l[e[h]][e[O]]=e[D];break end;break;end break;end while 2436==(n)/((-#"I boiled them into scrambled eggs"+((0x2174-4337)-0x873)))do n=(8339196)while(0x1a4-235)>=r do n-= n local r;local n;n=e[h];r=l[e[s]];l[n+1]=r;l[n]=r[e[B]];o=o+d;e=a[o];l[e[t]]=e[u];o=o+d;e=a[o];n=e[c]l[n](k(l,n+M,e[O]))o=o+d;e=a[o];n=e[b];r=l[e[U]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[w]][e[x]]=e[S];break;end while(n)/(((253656/0x24)-0xdfc))==2406 do n=(6571652)while((0xea+-33)+-#"zeynox was here")<r do n-= n local o=e[h];local d=l[e[u]];l[o+1]=d;l[o]=d[e[_]];break end while 2342==(n)/((0x1629-2867))do local r;local n;l[e[c]][e[O]]=l[e[C]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[U]))o=o+d;e=a[o];n=e[c];r=l[e[U]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[h]]={};o=o+d;e=a[o];l[e[t]]=m[e[U]];o=o+d;e=a[o];l[e[w]]=l[e[U]][e[D]];o=o+d;e=a[o];l[e[t]]=e[f];o=o+d;e=a[o];l[e[b]]=e[O];o=o+d;e=a[o];l[e[h]]=e[O];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[O]))break end;break;end break;end break;end while 2865==(n)/((-#'Sou usuário de HProtect'+(56006/0x29)))do n=(6321265)while r<=(-#'dot gg slash BKf6SjpfFv'+(0x6a8/8))do n-= n n=(2770560)while r<=((301+-0x5b)+-#[[nononono listen listen]])do n-= n o=e[s];break;end while 2496==(n)/((0x911-1211))do n=(4451058)while r>((0x1ce-255)+-#[[Rodenladder is gay]])do n-= n local d=e[c];local a=l[d]local n=l[d+2];if(n>0)then if(a>l[d+1])then o=e[O];else l[d+3]=a;end elseif(a<l[d+1])then o=e[x];else l[d+3]=a;end break end while 2502==(n)/((0x68ac3/241))do local r;local n;l[e[t]][e[O]]=l[e[B]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[c];r=l[e[x]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[w]][e[f]]=e[D];o=o+d;e=a[o];l[e[h]][e[s]]=e[C];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[s]))o=o+d;e=a[o];n=e[h];r=l[e[s]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[c]]=m[e[u]];break end;break;end break;end while(n)/(((167578/0x2e)+-#[[whats up]]))==1739 do n=(7468976)while r<=(1536/0x8)do n-= n n=(4009663)while r>(-0x64+291)do n-= n l[e[b]]=l[e[x]]-l[e[D]];break end while 2999==(n)/((0xac3-1418))do local e=e[i]l[e](l[e+M])break end;break;end while(n)/((699466/0xe9))==2488 do n=(5536992)while(-#"MoonsecV2 deobfuscator 2020 free 100 percent"+(0x251-(-#"balls"+(-0x21+394))))<r do n-= n local r;local n;l[e[b]][e[u]]=l[e[S]];o=o+d;e=a[o];n=e[c]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[t];r=l[e[s]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[w]][e[u]]=e[B];o=o+d;e=a[o];l[e[h]][e[f]]=e[B];break end while 2192==(n)/(((0x52374/133)+-#[[python]]))do local e=e[c]l[e](k(l,e+M,p))break end;break;end break;end break;end break;end while 2332==(n)/((449316/(0x23b-319)))do n=(6065754)while(-#"iPipeh Is My god"+(509-0x125))>=r do n-= n n=(7473438)while(471-0x112)>=r do n-= n n=(2066351)while(-#[[Monkey balls]]+(0x1c0-241))>=r do n-= n local e=e[w]l[e]=l[e](k(l,e+d,p))break;end while 1811==(n)/((0x4c0+-75))do n=(817532)while(455-((-0x20+320)+-#"what size is beliveri12s dick"))<r do n-= n l[e[b]][e[x]]=l[e[_]];break end while(n)/((0x4d2+(-3-0x35)))==694 do do return l[e[c]]end break end;break;end break;end while(n)/(((0x1986-3307)+-#[[Moonsex v5 eta]]))==2326 do n=(2731695)while r<=((0x58aa/97)+-#"2406924069240 your mom is gay af lol")do n-= n local r;local n;l[e[h]]=N[e[O]];o=o+d;e=a[o];n=e[h];r=l[e[x]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[h]]=e[U];o=o+d;e=a[o];l[e[w]]=l[e[O]];o=o+d;e=a[o];n=e[c]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];do return end;break;end while 1345==(n)/((0xffd-2062))do n=(11655370)while(0x100+-57)<r do n-= n local r;local n;l[e[i]][e[x]]=l[e[B]];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];n=e[c];r=l[e[s]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[i]]={};o=o+d;e=a[o];l[e[b]][e[f]]=e[P];o=o+d;e=a[o];l[e[b]][e[s]]=e[P];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[u]))o=o+d;e=a[o];n=e[t];r=l[e[x]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[c]]={};o=o+d;e=a[o];l[e[h]][e[O]]=e[B];break end while(n)/((0x1908-3263))==3706 do local e=e[i]l[e](k(l,e+M,p))break end;break;end break;end break;end while(n)/((3164-0x63b))==3866 do n=(584284)while((29295/0x87)+-#"sexo 4 o filme")>=r do n-= n n=(15241207)while r<=(0x11a+-81)do n-= n if(l[e[b]]==l[e[S]])then o=o+M;else o=e[f];end;break;end while(n)/((7924-0xfb7))==3907 do n=(6392511)while(((-25+0x6328)/0x6b)+-#[[how tf do i remove the meme strings]])<r do n-= n local r;local n;l[e[t]][e[U]]=l[e[P]];o=o+d;e=a[o];n=e[w]l[n]=l[n](k(l,n+d,e[O]))o=o+d;e=a[o];n=e[b];r=l[e[s]];l[n+1]=r;l[n]=r[e[S]];o=o+d;e=a[o];l[e[w]]={};o=o+d;e=a[o];l[e[c]]=m[e[U]];o=o+d;e=a[o];l[e[w]]=l[e[U]][e[C]];o=o+d;e=a[o];l[e[c]]=e[U];o=o+d;e=a[o];l[e[t]]=e[u];o=o+d;e=a[o];l[e[i]]=e[s];o=o+d;e=a[o];n=e[b]l[n]=l[n](k(l,n+d,e[u]))break end while 2181==(n)/((0x1745-3026))do if(l[e[t]]==e[_])then o=o+M;else o=e[U];end;break end;break;end break;end while 1849==(n)/((667-0x15f))do n=(1931559)while r<=(-#[[moonsec backrooms confirmed]]+(0x24a-354))do n-= n n=(8230312)while(0x66cc/129)<r do n-= n local r;local n;l[e[w]][e[f]]=l[e[P]];o=o+d;e=a[o];n=e[i]l[n]=l[n](k(l,n+d,e[f]))o=o+d;e=a[o];n=e[i];r=l[e[s]];l[n+1]=r;l[n]=r[e[D]];o=o+d;e=a[o];l[e[t]]={};o=o+d;e=a[o];l[e[c]]=m[e[O]];o=o+d;e=a[o];l[e[t]]=l[e[x]][e[C]];o=o+d;e=a[o];l[e[i]]=e[x];o=o+d;e=a[o];l[e[b]]=e[O];o=o+d;e=a[o];l[e[c]]=e[O];o=o+d;e=a[o];n=e[h]l[n]=l[n](k(l,n+d,e[x]))break end while(n)/((0x1a04-3344))==2482 do l[e[c]]=N[e[U]];break end;break;end while(n)/(((2298-0x4aa)+-#"Ok guys relax Theyre just fucking socks Its impossible for socks to turn me gay My heterosexuality will be fine dudes"))==1957 do n=(7873910)while r>(-#"da hood money generator 2022 working free no virus"+(0x24e-334))do n-= n l[e[c]]=l[e[U]][e[B]];o=o+d;e=a[o];l[e[i]]=l[e[U]][e[P]];o=o+d;e=a[o];l[e[c]]=l[e[U]][e[S]];o=o+d;e=a[o];l[e[h]]=l[e[O]][e[D]];o=o+d;e=a[o];l[e[w]][e[s]]=l[e[D]];break end while(n)/(((0x185b-3179)+-#"bigchungus"))==2585 do local r;local n;l[e[b]][e[O]]=l[e[D]];o=o+d;e=a[o];n=e[t]l[n]=l[n](k(l,n+d,e[x]))o=o+d;e=a[o];l[e[i]][e[O]]=l[e[_]];o=o+d;e=a[o];n=e[w];r=l[e[s]];l[n+1]=r;l[n]=r[e[_]];o=o+d;e=a[o];l[e[b]]=e[x];o=o+d;e=a[o];n=e[c]l[n](k(l,n+M,e[s]))o=o+d;e=a[o];n=e[i];r=l[e[x]];l[n+1]=r;l[n]=r[e[P]];o=o+d;e=a[o];l[e[b]]={};o=o+d;e=a[o];l[e[b]][e[U]]=e[P];o=o+d;e=a[o];l[e[i]]=l[e[u]][e[_]];break end;break;end break;end break;end break;end break;end break;end break;end o+= M end;end);end;return v(z(),{},L())()end)_msec({[(-#"Quiero pene"+(440-0x100))]='\115\116'..(function(e)return(e and'ڝڝنڝزؠټسڝسټ؃')or'\114\105'or'\120\58'end)((38-0x21)==(((0x7290/94)/0xc)+-#"free pornhub premium"))..'\110g',["ؠڝجڝڪجحڝئڝكآقڝټدك"]='\108\100'..(function(e)return(e and'ئكضضقنټح')or'\101\120'or'\119\111'end)(((0x2e27/139)+-#'81072288006025753475892953766016422248802943297561016754277806637153679671241827')==(0x4e6/209))..'\112',["سؠضنڪحضڝحججز"]=(function(e)return(e and'ټضدجڪزنجڝسضضټآ')and'\98\121'or'\100\120'end)((0x127/59)==(118-(0x14f-222)))..'\116\101',["ڝض؃زؠجآز؃جقسسڪققسحض"]='\99'..(function(e)return(e and'ننز؃زسڝنټؠآدئزن')and'\90\19\157'or'\104\97'end)(((0x74+-79)+-#"Me be like at 5am in the morning")==(429/0x8f))..'\114',[(0xd5ac/100)]='\116\97'..(function(e)return(e and'ټئټؠسنضكؠ؃ڝؠنجؠدس')and'\64\113'or'\98\108'end)(((0xaea/254)+-#'ballz')==(0x49+-68))..'\101',["دټزئڝددزددڪدؠدزڪ؃؃آ"]=(function(e)return(e and'جزآؠزجقزڪآآآټنڪنجس')or'\115\117'or'\78\107'end)((55+-0x34)==(151+(-0x43+-53)))..'\98',["ز؃دضكآؠضدح"]='\99\111'..(function(e)return(e and'حڪضدآڪټقنآنجټ')and'\110\99'or'\110\105\103\97'end)((0x5f-64)==((((-0x27+186)+-#[[luraph deobfuscator]])+-83)+-#"impulse is hot"))..'\97\116',[(1323-0x2c8)]=(function(e,o)return(e and'ڪقئآ؃ققآټټ؃ضڪئسئضڪس')and'\48\159\158\188\10'or'\109\97'end)((-#"Ginglebog"+(90-0x4c))==(-#"dies of cringe"+(133-0x71)))..'\116\104',[(0xb26-1472)]=(function(e,o)return(((0x672/25)+-#[[Well thats what they do when they get jealous they confuse it]])==(0x50-77)and'\48'..'\195'or e..((not'\20\95\69'and'\90'..'\180'or o)))or'\199\203\95'end),["ټئڝ؃ققكزسڪټكدآح"]='\105\110'..(function(e,o)return(e and'نڪټڪضنسضڪڪضكڝنضآ')and'\90\115\138\115\15'or'\115\101'end)((0x14a/66)==(4247/0x89))..'\114\116',["ټززضضدټ؃"]='\117\110'..(function(e,o)return(e and'نڪزسن؃؃ؠآآقزجزدجكق')or'\112\97'or'\20\38\154'end)(((0x6a-75)+-#'You are an absolute baboon')==(-#"sexo 4 o filme"+(100+-0x37)))..'\99\107',["ټسڝڝسدجقكآ؃ضنئڝ"]='\115\101'..(function(e)return(e and'ڝڝڪكنڝدزټكؠ؃ڪج؃قآ')and'\110\112\99\104'or'\108\101'end)((0x35-48)==(0xae-(0xf5+-102)))..'\99\116',["دجڝقزجؠڪڝئجآضج؃آ؃"]='\116\111\110'..(function(e,o)return(e and'كآڪئقدزآ')and'\117\109\98'or'\100\97\120\122'end)((-#'I like watching videos of black men shaking their booty cheeks'+(14941/0xdf))==(0x7d-120))..'\101\114'},{["ټض؃جسج؃زڪ"]=((getfenv))},((getfenv))()) end)()
+local configbox = configsection:Box{
+    Name = "Config Name",
+    Placeholder = "Config Name",
+    Flag = "Config Name"
+}
 
+library:ConfigIgnore("Config Name")
 
+local save = configsection:Button{
+    Name = "Save Config",
+    Callback = function()
+        library:SaveConfig(library.flags["Config Dropdown"] or library.flags["Config Name"]) -- SaveConfig(library.flags["Config Name"], true) if you want universal configs
+        configlist:Refresh(library:GetConfigs())
+    end
+}
+
+local AmbatukamSection = configs:Section{Name = "Ambatukam", Side = "Left"}
+
+local TheGuyWhoMadeDis = AmbatukamSection:Label("Made by Paman/Kamm the nigger!")
