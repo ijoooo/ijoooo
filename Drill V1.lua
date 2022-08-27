@@ -544,7 +544,7 @@ BrightnessToggle:Slider{
     Text = "[value]",
     --Default = 5,
     Min = 0,
-    Max = 24,
+    Max = 50,
     Float = 1,
     Flag = "BrightnesSlider",
     Callback = function(change)
