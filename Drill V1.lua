@@ -6,8 +6,8 @@ local watermark = library:Watermark("Drill V1 | 0.4")
 
 local main = library:Load{
     Name = "Drill V1",
-    SizeX = 500,
-    SizeY = 550,
+    SizeX = 600,
+    SizeY = 650,
     Theme = "Cyan",
     Extension = "json", -- config file extension
     Folder = "drill.folder" -- config folder name
