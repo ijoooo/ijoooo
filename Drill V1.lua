@@ -534,6 +534,26 @@ TimeChangerToggle:Slider{
     end
 }
 
+local BrightnessToggle = WorldSection:Toggle{
+    Name = "Brightness",
+    Flag = "BrightnessToggle",
+    --Default = true,
+}
+
+BrightnessToggle:Slider{
+    Text = "[value]",
+    --Default = 5,
+    Min = 0,
+    Max = 24,
+    Float = 1,
+    Flag = "BrightnesSlider",
+    Callback = function(change)
+        if library.flags["BrightnessToggle"] then
+            game:GetService("Lighting").Brightness = change
+        end
+    end
+}
+
 local Misc = main:Tab("Misc")
 
 local MovementSection = Misc:Section{
