@@ -1,13 +1,13 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ijoooo/ijoooo/main/ui.lua"))()
 
-local watermark = library:Watermark("Drill V1 | 0.4")
+local watermark = library:Watermark("Drill V1 | 0.5")
 -- watermark:Set("Watermark Set")
 -- watermark:Hide() -- toggles watermark
 
 local main = library:Load{
     Name = "Drill V1",
     SizeX = 600,
-    SizeY = 650,
+    SizeY = 600,
     Theme = "Cyan",
     Extension = "json", -- config file extension
     Folder = "drill.folder" -- config folder name
@@ -67,19 +67,6 @@ EnableToggleAimbot:Keybind{
     end
 }
 
-local aimbotSmoothing = AimbotSection:Slider{
-    Name = "Smoothing",
-    Text = "[value]/5",
-    Default = 0,
-    Min = 0.2,
-    Max = 5,
-    Float = 0.2,
-    Flag = "aimbotSmoothing",
-    Callback = function(value)
-        aimbot.Smoothing = value
-    end
-}
-
 local DrawFOVToggle = AimbotSection:Toggle{
     Name = "Draw FOV",
     Flag = "DrawFOVToggle",
@@ -117,6 +104,15 @@ local EnableToggleAliveCheck = AimbotSection:Toggle{
     end
 }
 
+local VisibleCheckToggle = AimbotSection:Toggle{
+    Name = "Visible Check",
+    Flag = "VisibleCheckToggle",
+    --Default = true,
+    Callback  = function(bool)
+        aimbot.VisibilityCheck = bool
+    end
+}
+
 local Aimbot_FOV_RadiusSlider = AimbotSection:Slider{
     Name = "Fov Radius",
     Text = "[value]/500",
@@ -127,6 +123,19 @@ local Aimbot_FOV_RadiusSlider = AimbotSection:Slider{
     Flag = "FovRadius",
     Callback = function(value)
         aimbot.FOV = value
+    end
+}
+
+local aimbotSmoothing = AimbotSection:Slider{
+    Name = "Smoothing",
+    Text = "[value]/5",
+    Default = 0,
+    Min = 0.2,
+    Max = 5,
+    Float = 0.2,
+    Flag = "aimbotSmoothing",
+    Callback = function(value)
+        aimbot.Smoothing = value
     end
 }
 
@@ -544,7 +553,7 @@ BrightnessToggle:Slider{
     Text = "[value]",
     --Default = 5,
     Min = 0,
-    Max = 50,
+    Max = 24,
     Float = 1,
     Flag = "BrightnesSlider",
     Callback = function(change)
